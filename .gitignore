@@ -9,6 +9,7 @@ venv/
 env/
 .env
 backend/.env
+backend/.env.production
 zen_hospitality.db
 
 # Build outputs

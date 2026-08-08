@@ -5,7 +5,9 @@ import api from '../lib/api';
 
 // Derive the backend origin (http://host:port) from VITE_API_URL so uploaded
 // image URLs work in production, not just on localhost.
-const API_ORIGIN = (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1').replace(/\/api\/v1\/?$/, '');
+const isProduction = import.meta.env.PROD;
+const API_BASE = isProduction ? '/api/v1' : (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1');
+const API_ORIGIN = isProduction ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1').replace(/\/api\/v1\/?$/, '');
 
 const INITIAL_FORM = {
   title: '', slug: '', description: '', category: 'travel_booking',
