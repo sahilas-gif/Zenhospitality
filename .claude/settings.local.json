@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk ls *)",
+      "Bash(rtk read *)",
+      "Bash(rtk grep *)",
+      "Bash(grep -oE '<h[1-4][^>]*>[^<]{3,60}' Zen-World-Hospitality-Up.html)",
+      "Bash(grep -oiE '\\(domestic|domestic tour|destination|tour package\\)[^<]{0,60}' Zen-World-Hospitality-Up.html)",
+      "Bash(grep -oE '\"[^\"]{8,90}\"' Zen-World-Hospitality-Up.html)",
+      "Bash(grep -oE '\"[^\"]{5,70}\"' Zen-World-Hospitality-Up.html)",
+      "Bash(grep -oE '[A-Za-z0-9 /]{4,25}\\(Nights|Night|Days|Day\\)' Zen-World-Hospitality-Up.html)",
+      "Bash(grep -oE '\"[^\"]{5,60}\"' Zen-World-Hospitality-Up.html)",
+      "Bash(grep -oE '\"[^\"]{3,90}\"' Zen-World-Hospitality-Up.html)",
+      "Bash(python3 *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(awk '{print $2}')",
+      "Bash(rtk npm *)",
+      "Bash(rtk find *)",
+      "Bash(grep -rInoE '\\\\+?[0-9][0-9 \\(\\)-]{8,}[0-9]' --include='*.py' --include='*.jsx' --include='*.js' --include='*.json' --include='*.md' -g '!node_modules' -g '!**/venv/**' -g '!**/.venv/**' -g '!**/.idea/**' -g '!frontend/dist/**' -g '!package-lock.json' .)",
+      "Bash(grep -rIn 'hero_bg_premium' . -g '!node_modules' -g '!**/venv/**' -g '!**/.venv/**')",
+      "Bash(rtk git *)",
+      "Bash(/Users/sahil/.local/bin/fcc-claude *)"
+    ]
+  }
+}

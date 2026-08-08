@@ -1,0 +1,15 @@
+fastapi>=0.110
+uvicorn[standard]
+sqlalchemy[asyncio]
+asyncpg
+aiosqlite
+pydantic
+pydantic-settings
+email-validator
+python-jose[cryptography]
+bcrypt
+aiofiles
+google-genai
+python-multipart
+slowapi
+redis

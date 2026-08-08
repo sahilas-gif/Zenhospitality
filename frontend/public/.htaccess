@@ -1,0 +1,48 @@
+# ──────────────────────────────────────────────────────────────
+# Zen World Hospitality — React SPA routing for Apache (hostycare.online)
+# This file ships inside dist/, so upload it alongside index.html.
+# Without it, deep URLs (e.g. /domestic-tours) return 404 on refresh.
+# ──────────────────────────────────────────────────────────────
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # RewriteBase is a no-op if empty
+  RewriteBase /
+
+  # Let real files / directories through as-is (fonts, images, JS, CSS)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else → serve the SPA shell
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# ── Compression ────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+# ── Browser caching for hashed build assets ────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType application/json "access plus 0 seconds"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# ── Security headers ───────────────────────────────────────────
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ── Prevent serving sensitive dotfiles ─────────────────────────
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>

@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: zen_admin
+      POSTGRES_PASSWORD: zen_password
+      POSTGRES_DB: zen_hospitality
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
