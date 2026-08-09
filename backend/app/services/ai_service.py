@@ -1,9 +1,12 @@
 import json
+import logging
 from google import genai
 from google.genai import types
 from pydantic import BaseModel
 from typing import List, Optional
 from app.config import settings
+
+logger = logging.getLogger(__name__)
 
 _client = None
 
@@ -97,7 +100,7 @@ Crucially, NEVER suggest activities that wildly mismatch the interests (e.g., do
             text = text[:-3]
         return json.loads(text.strip())
     except Exception as e:
-        print(f"Itinerary generation error: {e}")
+        logger.exception("Itinerary generation failed: %s", e)
         return {
             "error": f"Failed to generate itinerary: {str(e)}",
             "destination": destination,
@@ -150,5 +153,5 @@ INSTRUCTIONS:
         interaction = await asyncio.to_thread(_call_chat_api)
         return interaction.output_text
     except Exception as e:
-        print(f"Chat error: {e}")
+        logger.exception("Chat failed: %s", e)
         return "I apologize, but I am currently experiencing technical difficulties. Please call us at +91 80978 62804 for immediate assistance."
