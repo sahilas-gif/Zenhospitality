@@ -13,3 +13,4 @@ google-genai
 python-multipart
 slowapi
 redis
+a2wsgi
