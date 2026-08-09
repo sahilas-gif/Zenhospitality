@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-// Use relative path in production, env var for local dev
-const isProduction = import.meta.env.PROD;
-const API_BASE = isProduction
-  ? '/api/v1'
-  : (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1');
+// VITE_API_URL is injected at build time by Vite from .env file.
+// It should include the "/api" suffix (e.g., "https://api.hostycare.online/api" or "/api").
+// In production, we use the build-time injected value; in dev, fallback to localhost.
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 const api = axios.create({
   baseURL: API_BASE,

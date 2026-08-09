@@ -3,12 +3,6 @@ import { LayoutDashboard, LogOut, Calendar, Package as PackageIcon, Plus, Edit2,
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 
-// Derive the backend origin (http://host:port) from VITE_API_URL so uploaded
-// image URLs work in production, not just on localhost.
-const isProduction = import.meta.env.PROD;
-const API_BASE = isProduction ? '/api/v1' : (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1');
-const API_ORIGIN = isProduction ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1').replace(/\/api\/v1\/?$/, '');
-
 const INITIAL_FORM = {
   title: '', slug: '', description: '', category: 'travel_booking',
   destination: '', duration_days: 1, price_from: 0, price_to: 0,
@@ -331,7 +325,7 @@ const AdminDashboard = () => {
                     <div className="mt-4 grid grid-cols-4 gap-4">
                       {formData.images.map((img, i) => (
                         <div key={i} className="relative group rounded-lg overflow-hidden border border-gray-800">
-                          <img src={`${API_ORIGIN}${img}`} alt="" className="w-full h-24 object-cover" />
+                          <img src={img} alt="" className="w-full h-24 object-cover" />
                           <button type="button" onClick={() => removeImage(i)} className="absolute top-1 right-1 p-1 bg-red-500/80 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity"><X className="w-4 h-4" /></button>
                         </div>
                       ))}

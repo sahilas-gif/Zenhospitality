@@ -95,6 +95,6 @@ async def upload_images(files: List[UploadFile] = File(...), current_user: User 
         async with aiofiles.open(filepath, "wb") as out_file:
             await out_file.write(content)
 
-        uploaded_urls.append(f"/uploads/{filename}")
+        uploaded_urls.append(f"/api/uploads/{filename}")
 
     return {"urls": uploaded_urls}
