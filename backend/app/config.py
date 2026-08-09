@@ -16,11 +16,14 @@ class Settings(BaseSettings):
     DEBUG: bool = False
 
     # AI Models - verified live against the Gemini API with this account's key.
-    # gemini-2.5-flash is retired for new users (404); pro-tier models 429 due
-    # to quota (only flash tier is usable). gemini-flash-latest is an evergreen
-    # alias, so it cannot silently go stale the way the old invented names did.
-    GEMINI_ITINERARY_MODEL: str = "gemini-flash-latest"
-    GEMINI_CHAT_MODEL: str = "gemini-flash-latest"
+    # gemini-3.6-flash and gemini-3.5-flash are free-tier and respond.
+    # gemini-2.5-pro is free-tier but is rate-limited (429) when quota is
+    # exhausted, so it sits in the fallback chain and is skipped on 429.
+    # Primary is tried first; each fallback is tried in order until one succeeds.
+    GEMINI_CHAT_MODEL: str = "gemini-3.6-flash"
+    GEMINI_CHAT_FALLBACK_MODELS: str = "gemini-2.5-pro,gemini-3.5-flash"
+    GEMINI_ITINERARY_MODEL: str = "gemini-3.6-flash"
+    GEMINI_ITINERARY_FALLBACK_MODELS: str = "gemini-2.5-pro,gemini-3.5-flash"
 
     # Admin portal credentials - MUST be set via environment variables
     # No defaults - fails loudly if not configured

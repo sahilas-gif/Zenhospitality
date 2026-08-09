@@ -37,8 +37,14 @@ class Itinerary(BaseModel):
     travel_tips: Optional[List[str]] = None
     days: List[DayItinerary]
 
-ITINERARY_MODEL = settings.GEMINI_ITINERARY_MODEL
-CHAT_MODEL = settings.GEMINI_CHAT_MODEL
+def _model_chain(primary: str, fallbacks: str) -> List[str]:
+    return [primary] + [m.strip() for m in (fallbacks or "").split(",") if m.strip()]
+
+
+ITINERARY_MODELS = _model_chain(
+    settings.GEMINI_ITINERARY_MODEL, settings.GEMINI_ITINERARY_FALLBACK_MODELS
+)
+CHAT_MODELS = _model_chain(settings.GEMINI_CHAT_MODEL, settings.GEMINI_CHAT_FALLBACK_MODELS)
 
 async def generate_custom_itinerary(
     destination: str, duration_days: int, budget: str, interests: str
@@ -83,30 +89,45 @@ You MUST return the result as a valid JSON object matching the following schema 
 Crucially, NEVER suggest activities that wildly mismatch the interests (e.g., do not suggest wine tasting or luxury spas for someone who explicitly wants an economy trek). Focus heavily on the requested activities. Return ONLY valid JSON."""
 
     import asyncio
-    try:
-        def _call_api():
-            return client.interactions.create(
-                model=ITINERARY_MODEL,
-                input=prompt,
-                system_instruction=system_instruction
-            )
-        interaction = await asyncio.to_thread(_call_api)
-        text = interaction.output_text.strip()
-        if text.startswith("```json"):
-            text = text[7:]
-        if text.startswith("```"):
-            text = text[3:]
-        if text.endswith("```"):
-            text = text[:-3]
-        return json.loads(text.strip())
-    except Exception as e:
-        logger.exception("Itinerary generation failed: %s", e)
-        return {
-            "error": f"Failed to generate itinerary: {str(e)}",
-            "destination": destination,
-            "duration_days": duration_days,
-            "fallback": True,
-        }
+
+    def _call_api(model: str):
+        return client.interactions.create(
+            model=model,
+            input=prompt,
+            system_instruction=system_instruction
+        )
+
+    last_error = None
+    for model in ITINERARY_MODELS:
+        try:
+            interaction = await asyncio.to_thread(_call_api, model)
+            text = interaction.output_text.strip()
+            if text.startswith("```json"):
+                text = text[7:]
+            if text.startswith("```"):
+                text = text[3:]
+            if text.endswith("```"):
+                text = text[:-3]
+            return json.loads(text.strip())
+        except Exception as e:
+            last_error = e
+            logger.warning("Itinerary model %s failed (falling back): %s", model, e)
+
+    logger.exception("All itinerary models failed: %s", last_error)
+    return {
+        "error": f"Failed to generate itinerary: {last_error}",
+        "destination": destination,
+        "duration_days": duration_days,
+        "fallback": True,
+    }
+
+
+def _chat_call(model: str, client, prompt: str, system_instruction: str):
+    return client.interactions.create(
+        model=model,
+        input=prompt,
+        system_instruction=system_instruction
+    )
 
 
 async def handle_chat_message(messages: List[dict]) -> str:
@@ -143,15 +164,15 @@ INSTRUCTIONS:
     prompt += f"User: {user_message}\nAssistant: "
 
     import asyncio
-    try:
-        def _call_chat_api():
-            return client.interactions.create(
-                model=CHAT_MODEL,
-                input=prompt,
-                system_instruction=system_instruction
-            )
-        interaction = await asyncio.to_thread(_call_chat_api)
-        return interaction.output_text
-    except Exception as e:
-        logger.exception("Chat failed: %s", e)
-        return "I apologize, but I am currently experiencing technical difficulties. Please call us at +91 80978 62804 for immediate assistance."
+
+    last_error = None
+    for model in CHAT_MODELS:
+        try:
+            interaction = await asyncio.to_thread(_chat_call, model, client, prompt, system_instruction)
+            return interaction.output_text
+        except Exception as e:
+            last_error = e
+            logger.warning("Chat model %s failed (falling back): %s", model, e)
+
+    logger.exception("All chat models failed: %s", last_error)
+    return "I apologize, but I am currently experiencing technical difficulties. Please call us at +91 80978 62804 for immediate assistance."
