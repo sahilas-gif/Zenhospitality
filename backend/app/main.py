@@ -1,6 +1,8 @@
-from fastapi import FastAPI
+import os
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -11,7 +13,6 @@ from app.api.upload import router as upload_router
 from app.seed_admin import ensure_admin_user
 from app.config import settings
 from app.limiter import limiter
-import os
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -46,3 +47,33 @@ app.include_router(upload_router, prefix="/api/v1/upload", tags=["upload"])
 @app.get("/health")
 async def health_check():
     return {"status": "ok"}
+
+
+# Serve the built React app. Registered last so API/health/uploads routes win,
+# then non-API paths fall through to the SPA (index.html for client-side routing).
+FRONTEND_DIR = os.environ.get(
+    "FRONTEND_DIR",
+    os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")),
+)
+_INDEX_FILE = os.path.join(FRONTEND_DIR, "index.html")
+_ASSET_EXTS = {
+    ".js", ".css", ".json", ".jpg", ".jpeg", ".png", ".gif", ".svg",
+    ".ico", ".webp", ".avif", ".woff", ".woff2", ".ttf", ".otf", ".map",
+}
+
+
+@app.get("/{full_path:path}", include_in_schema=False)
+async def serve_spa(full_path: str):
+    root = os.path.realpath(FRONTEND_DIR)
+    if full_path and not full_path.startswith("api/"):
+        candidate = os.path.realpath(os.path.join(root, full_path))
+        if candidate.startswith(root) and os.path.isfile(candidate):
+            return FileResponse(candidate)
+
+    ext = os.path.splitext(full_path)[1].lower()
+    if ext in _ASSET_EXTS:
+        raise HTTPException(status_code=404)
+
+    if os.path.isfile(_INDEX_FILE):
+        return FileResponse(_INDEX_FILE)
+    raise HTTPException(status_code=404, detail="Frontend not built. Run npm run build.")
