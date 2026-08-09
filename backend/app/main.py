@@ -40,9 +40,11 @@ app.add_middleware(
 os.makedirs("uploads", exist_ok=True, mode=0o750)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
-app.include_router(enquiry_router, prefix="/api/v1")
-app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
-app.include_router(upload_router, prefix="/api/v1/upload", tags=["upload"])
+# cPanel mounts this app at the /api subdirectory and strips that prefix,
+# so the backend sees /v1/... (not /api/v1/...). Keep prefixes here at /v1.
+app.include_router(enquiry_router, prefix="/v1")
+app.include_router(auth_router, prefix="/v1/auth", tags=["auth"])
+app.include_router(upload_router, prefix="/v1/upload", tags=["upload"])
 
 @app.get("/health")
 async def health_check():
