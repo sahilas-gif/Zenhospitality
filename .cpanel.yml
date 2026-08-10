@@ -1,8 +1,6 @@
 ---
 deployment:
   tasks:
-    # Build frontend locally (or on server if Node is available)
-    - export DEPLOYPATH=/home/zenhospi/repositories/Zenhospitality/backend
-    - /bin/cp -R backend/* $DEPLOYPATH/
-    # Note: Frontend dist/ should be uploaded to public_html/ separately
-    # For full automation, add: rsync -av frontend/dist/ /home/zenhospi/public_html/
+    - export DEPLOYPATH=/home/zenhospi/public_html/
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/cp -R frontend/dist/. $DEPLOYPATH/
