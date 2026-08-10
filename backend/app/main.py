@@ -27,6 +27,9 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Parse CORS origins from settings
 cors_origins = [origin.strip() for origin in settings.FRONTEND_URL.split(",") if origin.strip()]
+for local_origin in ("http://localhost:5173", "http://127.0.0.1:5173"):
+    if local_origin not in cors_origins:
+        cors_origins.append(local_origin)
 
 app.add_middleware(
     CORSMiddleware,
@@ -42,10 +45,13 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # Support both /v1 and /api/v1 prefixes to handle all cPanel routing modes
 app.include_router(enquiry_router, prefix="/v1")
+app.include_router(enquiry_router, prefix="/api")
 app.include_router(enquiry_router, prefix="/api/v1")
 app.include_router(auth_router, prefix="/v1/auth", tags=["auth"])
+app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(upload_router, prefix="/v1/upload", tags=["upload"])
+app.include_router(upload_router, prefix="/api/upload", tags=["upload"])
 app.include_router(upload_router, prefix="/api/v1/upload", tags=["upload"])
 
 @app.get("/health")
@@ -58,7 +64,7 @@ async def health_check():
 # then non-API paths fall through to the SPA (index.html for client-side routing).
 FRONTEND_DIR = os.environ.get(
     "FRONTEND_DIR",
-    os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")),
+    os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist")),
 )
 _INDEX_FILE = os.path.join(FRONTEND_DIR, "index.html")
 _ASSET_EXTS = {

@@ -76,7 +76,7 @@ async def validate_image_file(file: UploadFile) -> tuple[bytes, str]:
     return content, normalize_ext(detected_mime)
 
 
-@router.post("/")
+@router.post("")
 async def upload_images(files: List[UploadFile] = File(...), current_user: User = Depends(get_current_user)):
     if len(files) > 10:
         raise HTTPException(
