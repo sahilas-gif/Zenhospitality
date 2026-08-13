@@ -17,7 +17,7 @@ packages_data = [
         "price_from": 15000.0,
         "price_to": 25000.0,
         "highlights": ["Beach hopping", "Water sports", "Sunset cruise", "Spice plantation tour"],
-        "image_url": f"{IMG}/goa-beach/800/600",
+        "images": [f"{IMG}/goa-beach/800/600"],
         "is_featured": True,
     },
     {
@@ -30,7 +30,7 @@ packages_data = [
         "price_from": 35000.0,
         "price_to": 55000.0,
         "highlights": ["Jaipur Fort", "Udaipur Lakes", "Desert Safari", "Royal dining"],
-        "image_url": f"{IMG}/rajasthan-palace/800/600",
+        "images": [f"{IMG}/rajasthan-palace/800/600"],
         "is_featured": True,
     },
     {
@@ -43,7 +43,7 @@ packages_data = [
         "price_from": 20000.0,
         "price_to": 35000.0,
         "highlights": ["Houseboat stay", "Ayurvedic spa", "Tea gardens", "Kathakali show"],
-        "image_url": f"{IMG}/kerala-backwater/800/600",
+        "images": [f"{IMG}/kerala-backwater/800/600"],
         "is_featured": False,
     },
     {
@@ -56,7 +56,7 @@ packages_data = [
         "price_from": 60000.0,
         "price_to": 90000.0,
         "highlights": ["Ubud temples", "Seminyak beaches", "Volcano trek", "Spa retreat"],
-        "image_url": f"{IMG}/bali-temple/800/600",
+        "images": [f"{IMG}/bali-temple/800/600"],
         "is_featured": True,
     },
     # ── Corporate ───────────────────────────────────────
@@ -70,7 +70,7 @@ packages_data = [
         "price_from": 12000.0,
         "price_to": 40000.0,
         "highlights": ["5-star hotel", "Airport transfers", "Meeting room access", "Business center"],
-        "image_url": f"{IMG}/hotel-luxury/800/600",
+        "images": [f"{IMG}/hotel-luxury/800/600"],
         "is_featured": True,
     },
     {
@@ -83,7 +83,7 @@ packages_data = [
         "price_from": 10000.0,
         "price_to": 30000.0,
         "highlights": ["Business center", "Commute service", "Express laundry", "Wi-Fi lounge"],
-        "image_url": f"{IMG}/modern-arch/800/600",
+        "images": [f"{IMG}/modern-arch/800/600"],
         "is_featured": False,
     },
     {
@@ -96,7 +96,7 @@ packages_data = [
         "price_from": 50000.0,
         "price_to": 200000.0,
         "highlights": ["Banquet hall", "Team building activities", "Gala dinner", "AV equipment"],
-        "image_url": f"{IMG}/corporate-event/800/600",
+        "images": [f"{IMG}/corporate-event/800/600"],
         "is_featured": True,
     },
     {
@@ -109,7 +109,7 @@ packages_data = [
         "price_from": 8000.0,
         "price_to": 20000.0,
         "highlights": ["Industrial zone proximity", "Early breakfast", "Secure parking", "24/7 support"],
-        "image_url": f"{IMG}/hotel-room/800/600",
+        "images": [f"{IMG}/hotel-room/800/600"],
         "is_featured": False,
     },
     # ── Hotel Management ────────────────────────────────
@@ -123,7 +123,7 @@ packages_data = [
         "price_from": 25000.0,
         "price_to": 50000.0,
         "highlights": ["Profile audit", "Dynamic pricing setup", "Review management", "Channel optimization"],
-        "image_url": f"{IMG}/world-explore/800/600",
+        "images": [f"{IMG}/world-explore/800/600"],
         "is_featured": True,
     },
     {
@@ -136,7 +136,7 @@ packages_data = [
         "price_from": 100000.0,
         "price_to": 300000.0,
         "highlights": ["Market analysis", "Yield management", "Sales strategy", "Competitor benchmarking"],
-        "image_url": f"{IMG}/luxury-resort/800/600",
+        "images": [f"{IMG}/luxury-resort/800/600"],
         "is_featured": True,
     },
     {
@@ -149,7 +149,7 @@ packages_data = [
         "price_from": 500000.0,
         "price_to": 1000000.0,
         "highlights": ["Staff training", "SOP creation", "Marketing launch", "Quality audit"],
-        "image_url": f"{IMG}/hotel-preopen/800/600",
+        "images": [f"{IMG}/hotel-preopen/800/600"],
         "is_featured": False,
     },
     {
@@ -162,7 +162,7 @@ packages_data = [
         "price_from": 200000.0,
         "price_to": 800000.0,
         "highlights": ["Housekeeping", "F&B management", "Front desk operations", "Revenue management"],
-        "image_url": f"{IMG}/fine-dining/800/600",
+        "images": [f"{IMG}/fine-dining/800/600"],
         "is_featured": True,
     },
 ]
