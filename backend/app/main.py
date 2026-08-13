@@ -14,6 +14,9 @@ from app.seed_admin import ensure_admin_user
 from app.config import settings
 from app.limiter import limiter
 
+from fastapi.responses import FileResponse, JSONResponse
+import traceback
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
@@ -24,6 +27,13 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Zen World Hospitality API", lifespan=lifespan)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=200,
+        content={"error": str(exc), "type": type(exc).__name__, "traceback": traceback.format_exc()},
+    )
 
 # Parse CORS origins from settings
 cors_origins = [origin.strip() for origin in settings.FRONTEND_URL.split(",") if origin.strip()]
