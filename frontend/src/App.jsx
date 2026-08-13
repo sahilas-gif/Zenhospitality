@@ -13,6 +13,7 @@ const MicePage = lazy(() => import('./pages/MicePage'));
 const RetailPage = lazy(() => import('./pages/RetailPage'));
 const HotelManagementPage = lazy(() => import('./pages/HotelManagementPage'));
 const DomesticToursPage = lazy(() => import('./pages/DomesticToursPage'));
+const TourDetailPage = lazy(() => import('./pages/TourDetailPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
@@ -48,6 +49,7 @@ function App() {
               <Route path="/services/retail" element={<RetailPage />} />
               <Route path="/services/hotel-management" element={<HotelManagementPage />} />
               <Route path="/domestic-tours" element={<DomesticToursPage />} />
+              <Route path="/domestic-tours/:state" element={<TourDetailPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/admin/login" element={<AdminLogin />} />

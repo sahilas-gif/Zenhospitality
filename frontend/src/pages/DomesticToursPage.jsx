@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Phone, MapPin, Check, Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Phone, MapPin, Check, Plus, ArrowRight } from 'lucide-react';
 import PageHeader from '../components/PageHeader';
 import DestinationCard from '../components/DestinationCard';
 import EnquiryModal from '../components/EnquiryModal';
@@ -11,6 +12,16 @@ import {
   tourAddons,
 } from '../data/domesticTours';
 import { CONTACT } from '../data/contact';
+
+const statePages = [
+  { name: 'Kerala Tours', slug: 'kerala', tagline: 'Backwaters, Hills & Ayurveda', color: 'from-green-600 to-emerald-700' },
+  { name: 'Goa Tours', slug: 'goa', tagline: 'Beaches, Churches & Nightlife', color: 'from-amber-500 to-orange-600' },
+  { name: 'Gujarat Tours', slug: 'gujarat', tagline: 'Rann of Kutch, Somnath & Gir', color: 'from-yellow-500 to-amber-600' },
+  { name: 'Mumbai Tours', slug: 'mumbai', tagline: 'Gateway, Bollywood & Coastal Charm', color: 'from-blue-500 to-indigo-600' },
+  { name: 'Uttar Pradesh Tours', slug: 'up', tagline: 'Kashi, Prayag, Ayodhya & Braj', color: 'from-purple-500 to-violet-600' },
+  { name: 'Maharashtra Tours', slug: 'maharashtra', tagline: 'Forts, Caves & Konkan Coast', color: 'from-red-500 to-rose-600' },
+  { name: 'Chardham Yatra', slug: 'chardham', tagline: 'Yamunotri, Gangotri, Kedarnath & Badrinath', color: 'from-teal-500 to-cyan-600' },
+];
 
 const DomesticToursPage = () => {
   const [selected, setSelected] = useState(null);
@@ -27,8 +38,40 @@ const DomesticToursPage = () => {
     <div>
       <PageHeader
         title="Domestic Tours"
-        subtitle="Premium Uttar Pradesh Religious Tours — Kashi • Prayag • Ayodhya • Braj, where faith meets serenity."
+        subtitle="Explore India's finest destinations — handcrafted spiritual yatras, beach getaways, heritage circuits & mountain pilgrimages."
       />
+
+      {/* Browse by State */}
+      <section className="py-12 md:py-16 bg-[#0c1222]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal>
+            <div className="text-center mb-8 md:mb-10">
+              <h2 className="text-emerald-500 font-medium tracking-widest uppercase text-sm mb-2">Browse by Destination</h2>
+              <h3 className="text-2xl md:text-4xl font-playfair font-bold text-white">Choose Your State</h3>
+            </div>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {statePages.map((s, idx) => (
+              <ScrollReveal key={s.slug} delay={idx * 60}>
+                <Link
+                  to={`/domestic-tours/${s.slug}`}
+                  className="group block glass-card rounded-xl p-5 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-300"
+                >
+                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${s.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                    <MapPin className="w-5 h-5 text-white" />
+                  </div>
+                  <h4 className="text-white font-bold text-base mb-1 group-hover:text-emerald-400 transition-colors">{s.name}</h4>
+                  <p className="text-gray-400 text-xs">{s.tagline}</p>
+                  <div className="mt-3 flex items-center text-emerald-400 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                    Explore <ArrowRight className="w-3 h-3 ml-1" />
+                  </div>
+                </Link>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Featured Signature Tour */}
       <section className="py-16 md:py-20 bg-[#0f2e24] relative overflow-hidden border-t border-[#c9a86a]/20">
@@ -111,7 +154,7 @@ const DomesticToursPage = () => {
             {/* Contact CTA card to fill the grid */}
             <ScrollReveal delay={domesticTours.length * 50}>
               <div className="glass-card flex flex-col items-center justify-center p-8 rounded-2xl text-center h-full border border-dashed border-emerald-500/30">
-                <p className="text-emerald-400 font-bold uppercase tracking-widest text-xs mb-2">Don’t see your route?</p>
+                <p className="text-emerald-400 font-bold uppercase tracking-widest text-xs mb-2">Don't see your route?</p>
                 <h4 className="text-white font-playfair font-bold text-xl mb-3">We Can Build It</h4>
                 <p className="text-gray-400 text-sm mb-5">
                   Add-ons — {tourAddons.join(', ')}. Custom pick-up from VNS / PRYJ / LKO / DEL. Corporate & large jatha groups welcome.

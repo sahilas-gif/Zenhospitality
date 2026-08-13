@@ -14,6 +14,10 @@
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
+  # Exclude /api from SPA rewrite (cPanel Python app Passenger handles /api via public_html/api/.htaccess)
+  RewriteCond %{REQUEST_URI} ^/api(/.*)?$ [NC]
+  RewriteRule ^ - [L]
+
   # Everything else → serve the SPA shell
   RewriteRule ^ index.html [L]
 </IfModule>

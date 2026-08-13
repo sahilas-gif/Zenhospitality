@@ -4,7 +4,7 @@ import { Lock, User, Loader2 } from 'lucide-react';
 import api from '../lib/api';
 
 const AdminLogin = () => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('zenhospi');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -20,7 +20,6 @@ const AdminLogin = () => {
       formData.append('username', username);
       formData.append('password', password);
 
-      // POST to the same configured API base as the rest of the app (VITE_API_URL).
       const response = await api.post('/auth/login', formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -32,8 +31,12 @@ const AdminLogin = () => {
         localStorage.setItem('refresh_token', response.data.refresh_token);
         navigate('/admin');
       }
-    } catch {
-      setError('Invalid username or password.');
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.detail) {
+        setError(err.response.data.detail);
+      } else {
+        setError('Invalid username or password.');
+      }
     } finally {
       setLoading(false);
     }

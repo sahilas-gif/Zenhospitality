@@ -4,7 +4,8 @@ import axios from "axios";
 // It should include the "/api" suffix (e.g., "https://api.hostycare.online/api" or "/api").
 // In production, set VITE_API_URL to the live backend if it is on another origin.
 // When frontend and backend are served together, the relative /api path works in dev and prod.
-const API_BASE = import.meta.env.VITE_API_URL || "/api";
+export const API_BASE = import.meta.env.VITE_API_URL || "/api";
+export const API_ORIGIN = import.meta.env.VITE_API_ORIGIN || "";
 
 const api = axios.create({
   baseURL: API_BASE,
