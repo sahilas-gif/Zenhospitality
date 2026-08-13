@@ -58,12 +58,17 @@ os.makedirs("uploads", exist_ok=True, mode=0o750)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # Support both /v1 and /api/v1 prefixes to handle all cPanel routing modes
+app.include_router(enquiry_router, prefix="")
 app.include_router(enquiry_router, prefix="/v1")
 app.include_router(enquiry_router, prefix="/api")
 app.include_router(enquiry_router, prefix="/api/v1")
+
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(auth_router, prefix="/v1/auth", tags=["auth"])
 app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
+
+app.include_router(upload_router, prefix="/upload", tags=["upload"])
 app.include_router(upload_router, prefix="/v1/upload", tags=["upload"])
 app.include_router(upload_router, prefix="/api/upload", tags=["upload"])
 app.include_router(upload_router, prefix="/api/v1/upload", tags=["upload"])
