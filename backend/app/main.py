@@ -19,8 +19,12 @@ import traceback
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    try:
+        from seed_data import seed
+        await seed()
+    except Exception:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
     await ensure_admin_user()
     yield
 
