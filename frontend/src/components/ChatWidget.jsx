@@ -26,7 +26,7 @@ const ChatWidget = () => {
       const { data } = await api.post('/ai/chat', { messages: [...messages, userMsg] });
       setMessages((prev) => [...prev, { role: 'model', content: data.response }]);
     } catch {
-      setMessages((prev) => [...prev, { role: 'model', content: 'I apologize, but I am currently experiencing technical difficulties. Please call us at +91 80978 62804 for immediate assistance.' }]);
+      setMessages((prev) => [...prev, { role: 'model', content: 'I apologize, but I am currently experiencing technical difficulties. Please call us at +91 88280 15060 for immediate assistance.' }]);
     } finally {
       setIsLoading(false);
     }

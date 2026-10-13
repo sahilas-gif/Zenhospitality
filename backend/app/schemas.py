@@ -102,3 +102,15 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     response: str
 
+class PageContentBase(BaseModel):
+    slug: str
+    content: Any
+
+class PageContentCreate(PageContentBase):
+    pass
+
+class PageContentResponse(PageContentBase):
+    id: int
+    updated_at: Optional[datetime] = None
+
+    model_config = {"from_attributes": True}

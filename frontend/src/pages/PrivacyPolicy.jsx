@@ -37,7 +37,7 @@ const PrivacyPolicy = () => (
         <section>
           <h2 className="text-2xl font-playfair font-bold text-white mb-4">5. Contact Us</h2>
           <p className="leading-relaxed">
-            If you have any questions about this Privacy Policy, please contact us at sales@zenhospitality.in or connect.zenworld@gmail.com, or call us at +91 80978 62804 / +91 80973 77058.
+            If you have any questions about this Privacy Policy, please contact us at sales@zenhospitality.in or connect.zenworld@gmail.com, or call us at +91 88280 15060 / +91 80973 77058.
           </p>
         </section>
       </div>

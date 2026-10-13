@@ -33,11 +33,35 @@ const AdminDashboard = () => {
   const [uploading, setUploading] = useState(false);
   const [highlightInput, setHighlightInput] = useState('');
 
+  const [pageSlug, setPageSlug] = useState('home');
+  const [pageContent, setPageContent] = useState({});
+  const [savingPage, setSavingPage] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (activeTab !== 'pages') return;
+    api.get(`/pages/${pageSlug}`)
+      .then((res) => setPageContent(res.data.content || {}))
+      .catch(() => setPageContent({}));
+  }, [activeTab, pageSlug]);
+
+  const savePageContent = async () => {
+    setSavingPage(true);
+    try {
+      await api.put(`/admin/pages/${pageSlug}`, { slug: pageSlug, content: pageContent });
+      setSuccess('Page content updated successfully!');
+      setTimeout(() => setSuccess(''), 4000);
+    } catch {
+      setError('Failed to save page content.');
+    } finally {
+      setSavingPage(false);
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -260,6 +284,16 @@ const AdminDashboard = () => {
             >
               <Inbox className="w-4 h-4 mr-2" /> Customer Enquiries ({enquiries.length})
             </button>
+            <button
+              onClick={() => setActiveTab('pages')}
+              className={`flex items-center px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                activeTab === 'pages'
+                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+              }`}
+            >
+              <Edit2 className="w-4 h-4 mr-2" /> Page Content
+            </button>
           </div>
 
           {activeTab === 'packages' && (
@@ -396,6 +430,54 @@ const AdminDashboard = () => {
                     </table>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* PAGE CONTENT TAB */}
+            {activeTab === 'pages' && (
+              <div className="bg-gray-900/40 border border-gray-800 rounded-2xl overflow-hidden p-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                  <label className="w-full sm:w-1/3 block text-xs font-medium text-gray-400">
+                    Select Page to Edit
+                    <select value={pageSlug} onChange={(e) => setPageSlug(e.target.value)} className="mt-2 w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white">
+                      <option value="home">Home Page</option>
+                      <option value="about">About Page</option>
+                      <option value="services">Services Page</option>
+                      <option value="contact">Contact Page</option>
+                    </select>
+                  </label>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        const name = window.prompt('Enter new field name (e.g., hero_title):');
+                        if (name && name.trim()) setPageContent((c) => ({ ...c, [name.trim()]: '' }));
+                      }}
+                      className="flex items-center px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm font-medium"
+                    >
+                      <Plus className="w-4 h-4 mr-1.5" /> Add Field
+                    </button>
+                    <button onClick={savePageContent} disabled={savingPage} className="flex items-center px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium">
+                      <CheckCircle className="w-4 h-4 mr-1.5" /> Save Content
+                    </button>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  {Object.keys(pageContent).length === 0 ? (
+                    <div className="text-center py-12 text-gray-500 bg-gray-950/50 rounded-xl border border-gray-800">No content defined for this page yet. Click "Add Field" to start.</div>
+                  ) : (
+                    Object.entries(pageContent).map(([key, value]) => (
+                      <label key={key} className="block bg-gray-950 border border-gray-800 rounded-xl p-4">
+                        <span className="block text-xs font-mono text-emerald-400 mb-2">{key}</span>
+                        <textarea
+                          rows={String(value).length > 100 ? 4 : 2}
+                          value={value}
+                          onChange={(e) => setPageContent((c) => ({ ...c, [key]: e.target.value }))}
+                          className="w-full bg-transparent border-0 border-b border-gray-800 px-0 py-2 text-sm text-white resize-y"
+                        />
+                      </label>
+                    ))
+                  )}
+                </div>
               </div>
             )}
           </>

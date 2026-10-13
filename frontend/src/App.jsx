@@ -15,6 +15,9 @@ const HotelManagementPage = lazy(() => import('./pages/HotelManagementPage'));
 const DomesticToursPage = lazy(() => import('./pages/DomesticToursPage'));
 const TourDetailPage = lazy(() => import('./pages/TourDetailPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const TransportationPage = lazy(() => import('./pages/TransportationPage'));
+const InternationalToursPage = lazy(() => import('./pages/InternationalToursPage'));
+const FlightTicketingPage = lazy(() => import('./pages/FlightTicketingPage'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
@@ -51,6 +54,9 @@ function App() {
               <Route path="/domestic-tours" element={<DomesticToursPage />} />
               <Route path="/domestic-tours/:state" element={<TourDetailPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/transportation" element={<TransportationPage />} />
+              <Route path="/international-tours" element={<InternationalToursPage />} />
+              <Route path="/flight-ticketing" element={<FlightTicketingPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route 

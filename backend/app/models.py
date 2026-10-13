@@ -78,3 +78,11 @@ class AiItinerary(Base):
     budget = Column(String)
     itinerary_data = Column(JSON)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+class PageContent(Base):
+    __tablename__ = "page_contents"
+
+    id = Column(Integer, primary_key=True, index=True)
+    slug = Column(String, unique=True, index=True)
+    content = Column(JSON)
+    updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))

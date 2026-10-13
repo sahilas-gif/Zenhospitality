@@ -10,6 +10,7 @@ from app.database import engine, Base
 from app.api.enquiry import router as enquiry_router
 from app.api.auth import router as auth_router
 from app.api.upload import router as upload_router
+from app.api.pages import router as pages_router
 from app.seed_admin import ensure_admin_user
 from app.config import settings
 from app.limiter import limiter
@@ -72,6 +73,11 @@ app.include_router(upload_router, prefix="/upload", tags=["upload"])
 app.include_router(upload_router, prefix="/v1/upload", tags=["upload"])
 app.include_router(upload_router, prefix="/api/upload", tags=["upload"])
 app.include_router(upload_router, prefix="/api/v1/upload", tags=["upload"])
+
+app.include_router(pages_router, prefix="", tags=["pages"])
+app.include_router(pages_router, prefix="/v1", tags=["pages"])
+app.include_router(pages_router, prefix="/api", tags=["pages"])
+app.include_router(pages_router, prefix="/api/v1", tags=["pages"])
 
 @app.get("/health")
 @app.get("/api/health")

@@ -2,7 +2,6 @@ import asyncio
 from app.database import engine, Base, async_session_maker
 from app.models import Package
 
-
 IMG = "https://picsum.photos/seed"
 
 packages_data = [
@@ -174,7 +173,6 @@ async def seed():
         await conn.run_sync(Base.metadata.create_all)
 
     async with async_session_maker() as session:
-        # Check if already seeded
         from sqlalchemy import select, func
 
         count = await session.scalar(select(func.count(Package.id)))

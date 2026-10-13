@@ -26,6 +26,15 @@ const tourLinks = [
   { name: 'Uttar Pradesh Tours', href: '/domestic-tours/up' },
   { name: 'Maharashtra Tours', href: '/domestic-tours/maharashtra' },
   { name: 'Chardham Yatra', href: '/domestic-tours/chardham' },
+  { name: 'International Tours', href: '/international-tours' },
+];
+
+const bookingLinks = [
+  { name: 'Hotels', href: '/services/retail' },
+  { name: 'Service Apartments', href: '/services/corporate' },
+  { name: 'Resort and Villa', href: '/services/retail' },
+  { name: 'Transportation', href: '/transportation' },
+  { name: 'Flight Ticketing', href: '/flight-ticketing' },
 ];
 
 const Navbar = () => {
@@ -120,6 +129,7 @@ const Navbar = () => {
               )}
             </div>
 
+            <Link to="/transportation" className={linkClass('/transportation')}>Transportation</Link>
             <Link to="/contact" className={linkClass('/contact')}>Contact Us</Link>
 
             <a href={CONTACT.phonePrimaryTel} className="flex items-center text-sm bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-full transition-all hover-glow shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)]">
@@ -153,6 +163,14 @@ const Navbar = () => {
               <span className="block px-3 py-1.5 text-xs text-gray-500 font-bold uppercase tracking-wider">Tours Packages</span>
               {tourLinks.map((link) => (
                 <Link key={link.href} to={link.href} className={`block px-3 py-2.5 ml-2 text-sm font-medium rounded-lg ${isActive(link.href) ? 'text-emerald-400 bg-gray-800' : 'text-gray-300 hover:text-emerald-400 hover:bg-gray-800'}`}>
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+            <div className="border-t border-gray-800 my-2 pt-2">
+              <span className="block px-3 py-1.5 text-xs text-gray-500 font-bold uppercase tracking-wider">Booking</span>
+              {bookingLinks.map((link) => (
+                <Link key={link.name} to={link.href} className="block px-3 py-2.5 ml-2 text-sm font-medium rounded-lg text-gray-300 hover:text-emerald-400 hover:bg-gray-800">
                   {link.name}
                 </Link>
               ))}

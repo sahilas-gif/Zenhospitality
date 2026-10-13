@@ -1,7 +1,7 @@
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const Hero = () => (
+const Hero = ({ title, subtitle, description }) => (
   <section className="relative min-h-[90vh] md:min-h-screen flex items-center justify-center overflow-hidden">
     <div className="absolute inset-0 z-0">
       {/* Real travel background image */}
@@ -17,16 +17,20 @@ const Hero = () => (
 
     <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-24 md:pt-28">
       <span className="inline-block py-1 px-3 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs md:text-sm font-semibold tracking-widest uppercase mb-5 md:mb-6 animate-fade-in" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
-        Welcome to Zen World Hospitality
+        {subtitle || 'Welcome to Zen World Hospitality'}
       </span>
 
       <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold font-playfair text-white mb-5 md:mb-6 leading-tight animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-        Elevating <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-[#d4a854]">Experiences</span>.<br />
-        Empowering Growth.
+        {title || (
+          <>
+            Elevating <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-[#d4a854]">Experiences</span>.<br />
+            Empowering Growth.
+          </>
+        )}
       </h1>
 
       <p className="text-base md:text-xl text-gray-200 mb-8 md:mb-10 max-w-3xl mx-auto font-light leading-relaxed animate-fade-in" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
-        End-to-end hospitality, travel, and strategic hotel management solutions tailored for hotels, resorts, businesses, and global travelers.
+        {description || 'End-to-end hospitality, travel, and strategic hotel management solutions tailored for hotels, resorts, businesses, and global travelers.'}
       </p>
 
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 animate-fade-in" style={{ animationDelay: '0.7s', animationFillMode: 'both' }}>

@@ -3,14 +3,14 @@
 
 export const CONTACT = {
   // Primary phone — used for direct call / WhatsApp CTAs
-  phonePrimary: '+91 80978 62804',
-  phonePrimaryTel: 'tel:+918097862804',
-  phonePrimaryWhatsApp: '918097862804',
+  phonePrimary: '+91 88280 15060',
+  phonePrimaryTel: 'tel:+918828015060',
+  phonePrimaryWhatsApp: '918828015060',
   // Secondary phone — shown alongside the primary in contact lists
   phoneSecondary: '+91 80973 77058',
   phoneSecondaryTel: 'tel:+918097377058',
   // Both numbers, used for display strings
-  phones: ['+91 80978 62804', '+91 80973 77058'],
+  phones: ['+91 88280 15060', '+91 80973 77058'],
 
   emailPrimary: 'sales@zenhospitality.in',
   emailPrimaryMailto: 'mailto:sales@zenhospitality.in',
