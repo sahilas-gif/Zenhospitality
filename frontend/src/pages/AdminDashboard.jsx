@@ -33,6 +33,8 @@ const AdminDashboard = () => {
   const [uploading, setUploading] = useState(false);
   const [highlightInput, setHighlightInput] = useState('');
 
+  const [hotels, setHotels] = useState([]);
+  const [enquiryType, setEnquiryType] = useState('');
   const [pageSlug, setPageSlug] = useState('home');
   const [pageContent, setPageContent] = useState({});
   const [savingPage, setSavingPage] = useState(false);
@@ -41,7 +43,8 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enquiryType]);
 
   useEffect(() => {
     if (activeTab !== 'pages') return;
@@ -67,12 +70,14 @@ const AdminDashboard = () => {
     setLoading(true);
     setError('');
     try {
-      const [pkgRes, enqRes] = await Promise.all([
+      const [pkgRes, enqRes, hotelRes] = await Promise.all([
         api.get('/packages'),
-        api.get('/admin/enquiries')
+        api.get('/admin/enquiries', { params: enquiryType ? { enquiry_type: enquiryType } : {} }),
+        api.get('/admin/hotels'),
       ]);
       setPackages(pkgRes.data);
       setEnquiries(enqRes.data);
+      setHotels(hotelRes.data);
     } catch (err) {
       if (err.response?.status === 401) {
         handleLogout();
@@ -224,7 +229,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#050811] pt-8 pb-12 font-sans text-gray-200">
+    <div className="min-h-screen bg-[#060d17] pt-8 pb-12 font-sans text-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
@@ -268,8 +273,8 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('packages')}
               className={`flex items-center px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
                 activeTab === 'packages'
-                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                  ? 'bg-emerald-600 text-ink-950 shadow-lg shadow-emerald-900/20'
+                  : 'text-gray-400 hover:text-ink-950 hover:bg-gray-800/50'
               }`}
             >
               <PackageIcon className="w-4 h-4 mr-2" /> Tour Packages ({packages.length})
@@ -278,8 +283,8 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('enquiries')}
               className={`flex items-center px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
                 activeTab === 'enquiries'
-                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                  ? 'bg-emerald-600 text-ink-950 shadow-lg shadow-emerald-900/20'
+                  : 'text-gray-400 hover:text-ink-950 hover:bg-gray-800/50'
               }`}
             >
               <Inbox className="w-4 h-4 mr-2" /> Customer Enquiries ({enquiries.length})
@@ -288,18 +293,28 @@ const AdminDashboard = () => {
               onClick={() => setActiveTab('pages')}
               className={`flex items-center px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
                 activeTab === 'pages'
-                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                  ? 'bg-emerald-600 text-ink-950 shadow-lg shadow-emerald-900/20'
+                  : 'text-gray-400 hover:text-ink-950 hover:bg-gray-800/50'
               }`}
             >
               <Edit2 className="w-4 h-4 mr-2" /> Page Content
+            </button>
+            <button
+              onClick={() => setActiveTab('hotels')}
+              className={`flex items-center px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                activeTab === 'hotels'
+                  ? 'bg-emerald-600 text-ink-950'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Hotels ({hotels.length})
             </button>
           </div>
 
           {activeTab === 'packages' && (
             <button
               onClick={openCreateModal}
-              className="flex items-center justify-center px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-emerald-900/20 text-sm"
+              className="flex items-center justify-center px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-ink-950 font-semibold rounded-xl transition-all shadow-lg shadow-emerald-900/20 text-sm"
             >
               <Plus className="w-4 h-4 mr-2" /> Add New Package
             </button>
@@ -376,6 +391,13 @@ const AdminDashboard = () => {
             {/* ENQUIRIES TAB */}
             {activeTab === 'enquiries' && (
               <div className="bg-gray-900/40 border border-gray-800 rounded-2xl overflow-hidden">
+                <div className="flex gap-2 p-4">
+                  {['', 'hotel', 'package', 'transport', 'itinerary', 'general'].map((t) => (
+                    <button key={t || 'all'} type="button" onClick={() => setEnquiryType(t)} className={`rounded-full px-3 py-1 text-xs ${enquiryType === t ? 'bg-gold text-ink-950' : 'border border-gray-700 text-gray-300'}`}>
+                      {t || 'all'}
+                    </button>
+                  ))}
+                </div>
                 {enquiries.length === 0 ? (
                   <div className="py-16 text-center text-gray-500">No customer enquiries received yet.</div>
                 ) : (
@@ -394,7 +416,10 @@ const AdminDashboard = () => {
                       <tbody className="divide-y divide-gray-800/60 text-gray-300">
                         {enquiries.map((enq) => (
                           <tr key={enq.id} className="hover:bg-gray-800/30 transition-colors">
-                            <td className="px-6 py-4 font-semibold text-white">{enq.customer_name}</td>
+                            <td className="px-6 py-4 font-semibold text-white">
+                              {enq.customer_name}
+                              <div className="text-[11px] font-normal text-gray-500">{enq.reference} · {enq.enquiry_type || 'general'}{enq.hotel_name ? ` · ${enq.hotel_name}` : ''}</div>
+                            </td>
                             <td className="px-6 py-4 text-emerald-400 font-mono">{enq.customer_phone}</td>
                             <td className="px-6 py-4 text-xs">
                               <div>📅 {enq.travel_date || 'N/A'}</div>
@@ -433,6 +458,30 @@ const AdminDashboard = () => {
               </div>
             )}
 
+            {activeTab === 'hotels' && (
+              <div className="space-y-3">
+                {hotels.map((h) => (
+                  <div key={h.id} className="flex items-center justify-between rounded-2xl border border-gray-800 bg-gray-900/40 p-4">
+                    <div>
+                      <p className="font-semibold text-white">{h.name}</p>
+                      <p className="text-xs text-gray-400">{h.city} · {h.is_published ? 'published' : 'draft'}</p>
+                    </div>
+                    <button
+                      type="button"
+                      className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-200"
+                      onClick={async () => {
+                        await api.put(`/admin/hotels/${h.id}`, { ...h, is_published: !h.is_published });
+                        fetchData();
+                      }}
+                    >
+                      {h.is_published ? 'Unpublish' : 'Publish'}
+                    </button>
+                  </div>
+                ))}
+                {hotels.length === 0 && <p className="text-gray-500">No hotels yet. Run seed_hotels.py or add one through the API.</p>}
+              </div>
+            )}
+
             {/* PAGE CONTENT TAB */}
             {activeTab === 'pages' && (
               <div className="bg-gray-900/40 border border-gray-800 rounded-2xl overflow-hidden p-6">
@@ -456,7 +505,7 @@ const AdminDashboard = () => {
                     >
                       <Plus className="w-4 h-4 mr-1.5" /> Add Field
                     </button>
-                    <button onClick={savePageContent} disabled={savingPage} className="flex items-center px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium">
+                    <button onClick={savePageContent} disabled={savingPage} className="flex items-center px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-ink-950 rounded-lg text-sm font-medium">
                       <CheckCircle className="w-4 h-4 mr-1.5" /> Save Content
                     </button>
                   </div>
@@ -488,8 +537,8 @@ const AdminDashboard = () => {
       {/* CREATE / EDIT MODAL */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#0a0f1c] border border-gray-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="sticky top-0 bg-[#0a0f1c] border-b border-gray-800 p-4 flex justify-between items-center z-10">
+          <div className="bg-[#060d17] border border-gray-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="sticky top-0 bg-[#060d17] border-b border-gray-800 p-4 flex justify-between items-center z-10">
               <h3 className="text-xl font-bold text-white">{editingPackage ? 'Edit Tour Package' : 'Create New Tour Package'}</h3>
               <button onClick={closeModal} className="text-gray-400 hover:text-white transition-colors"><X className="w-6 h-6" /></button>
             </div>
@@ -580,7 +629,7 @@ const AdminDashboard = () => {
 
               <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
                 <button type="button" onClick={closeModal} className="px-5 py-2.5 text-gray-400 hover:text-white font-medium transition-colors text-sm">Cancel</button>
-                <button type="submit" disabled={uploading} className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-semibold transition-all shadow-lg text-sm flex items-center gap-2">
+                <button type="submit" disabled={uploading} className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-ink-950 rounded-xl font-semibold transition-all shadow-lg text-sm flex items-center gap-2">
                   {uploading ? <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white" /> : (editingPackage ? 'Update Package' : 'Save Package')}
                 </button>
               </div>

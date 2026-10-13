@@ -2,7 +2,7 @@ import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { CONTACT } from '../data/contact';
 
 const ContactSection = () => (
-  <section className="py-16 md:py-24 bg-[#0a0f1c] relative border-t border-gray-800">
+  <section className="py-16 md:py-24 bg-[#060d17] relative border-t border-gray-800">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-12 md:mb-16">
         <h2 className="text-emerald-500 font-medium tracking-widest uppercase text-sm mb-2">Get in Touch</h2>
@@ -15,8 +15,8 @@ const ContactSection = () => (
           <h4 className="text-xl md:text-2xl font-playfair font-bold text-white mb-6 md:mb-8">Contact Information</h4>
           <div className="space-y-5 md:space-y-8">
             {[
-              { icon: Phone, label: 'Phone', value: `${CONTACT.phonePrimary} / ${CONTACT.phoneSecondary}`, href: CONTACT.phonePrimaryTel },
-              { icon: Mail, label: 'Email', value: `${CONTACT.emailPrimary} · ${CONTACT.emailSecondary}`, href: CONTACT.emailPrimaryMailto },
+              { icon: Phone, label: 'Phone', value: CONTACT.phonePrimary, href: CONTACT.phonePrimaryTel },
+              { icon: Mail, label: 'Email', value: CONTACT.emailPrimary, href: CONTACT.emailPrimaryMailto },
               { icon: MapPin, label: 'Office Location', value: CONTACT.address },
               { icon: Clock, label: 'Business Hours', value: CONTACT.hours },
             ].map((item, i) => (

@@ -99,7 +99,7 @@ const PackagesSection = () => {
   }, [packages, activeTab, searchQuery, sortBy]);
 
   return (
-    <section className="py-16 md:py-24 bg-[#0a0f1c]">
+    <section className="py-16 md:py-24 bg-[#060d17]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <ScrollReveal>
           <div className="text-center mb-10 md:mb-12">

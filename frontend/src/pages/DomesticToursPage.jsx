@@ -42,7 +42,7 @@ const DomesticToursPage = () => {
       />
 
       {/* Browse by State */}
-      <section className="py-12 md:py-16 bg-[#0c1222]">
+      <section className="py-12 md:py-16 bg-[#0a192f]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div className="text-center mb-8 md:mb-10">
@@ -74,7 +74,7 @@ const DomesticToursPage = () => {
       </section>
 
       {/* Featured Signature Tour */}
-      <section className="py-16 md:py-20 bg-[#0f2e24] relative overflow-hidden border-t border-[#c9a86a]/20">
+      <section className="py-16 md:py-20 bg-[#1e293b] relative overflow-hidden border-t border-[#d4af37]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
             <div>
@@ -96,7 +96,7 @@ const DomesticToursPage = () => {
                 href={`https://wa.me/${CONTACT.phonePrimaryWhatsApp}?text=${encodeURIComponent('Hi Zen World Hospitality, I would like to know more about the ' + flagship.duration + ' tour.')}`}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-full font-bold transition-all hover-glow"
+                className="inline-flex items-center bg-emerald-600 hover:bg-emerald-500 text-ink-950 px-6 py-3 rounded-full font-bold transition-all hover-glow"
               >
                 <Phone className="w-4 h-4 mr-2" /> Plan this Yatra — {CONTACT.phonePrimary}
               </a>
@@ -133,7 +133,7 @@ const DomesticToursPage = () => {
       </section>
 
       {/* All Tour Circuits */}
-      <section className="py-16 md:py-24 bg-[#0a0f1c]">
+      <section className="py-16 md:py-24 bg-[#060d17]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div className="text-center mb-10 md:mb-12">
@@ -169,7 +169,7 @@ const DomesticToursPage = () => {
       </section>
 
       {/* Facilities */}
-      <section className="py-16 bg-[#0f2e24] border-t border-[#c9a86a]/20">
+      <section className="py-16 bg-[#1e293b] border-t border-[#d4af37]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-center text-[#e8d5a8] font-bold uppercase tracking-widest text-sm mb-8">Included on Every Yatra</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

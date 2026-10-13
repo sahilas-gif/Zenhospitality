@@ -4,12 +4,12 @@ const services = [
   {
     icon: Map, title: 'Travel & Tourism', color: 'emerald',
     items: ['Customized Leisure & Holiday Packages', 'Domestic & International Tours', 'Luxury Honeymoon & Cruise Packages', 'Adventure & Spiritual Tourism'],
-    accent: '#10b981',
+    accent: '#d4af37',
   },
   {
     icon: TrendingUp, title: 'Hotel Management', color: 'gold',
     items: ['Strategic Sales & Marketing', 'Revenue Management & Yield Optimization', 'Pre-Opening Support for New Hotels', 'Brand Positioning & Online Reputation'],
-    accent: '#d4a854',
+    accent: '#d4af37',
   },
   {
     icon: Hotel, title: 'Hospitality Solutions', color: 'blue',
@@ -24,7 +24,7 @@ const ScopeOfServices = () => (
       <div className="text-center mb-12 md:mb-16">
         <h2 className="text-emerald-500 font-medium tracking-widest uppercase text-sm mb-2">Our Expertise</h2>
         <h3 className="text-3xl md:text-5xl font-playfair font-bold text-white mb-6">Scope of Services</h3>
-        <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-[#d4a854] mx-auto rounded-full mb-6" />
+        <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-[#d4af37] mx-auto rounded-full mb-6" />
         <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base">Comprehensive solutions tailored for every aspect of the hospitality and travel industry.</p>
       </div>
 

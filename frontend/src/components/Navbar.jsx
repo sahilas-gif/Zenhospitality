@@ -1,189 +1,224 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, ChevronDown } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { ChevronDown, Menu, Phone, X } from 'lucide-react';
 import { CONTACT } from '../data/contact';
-
-const navLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'About Us', href: '/about' },
-  { name: 'Contact Us', href: '/contact' },
-];
+import { setScrollLocked } from '../lib/scroll';
 
 const serviceLinks = [
-  { name: 'Overview', href: '/services' },
-  { name: 'Corporate Travel', href: '/services/corporate' },
-  { name: 'MICE Accommodations', href: '/services/mice' },
-  { name: 'Retail & B2C Booking', href: '/services/retail' },
-  { name: 'Hotel Management', href: '/services/hotel-management' },
+  { name: 'All services', href: '/services' },
+  { name: 'Corporate travel', href: '/services/corporate' },
+  { name: 'MICE and events', href: '/services/mice' },
+  { name: 'Holidays and B2C', href: '/services/retail' },
+  { name: 'Hotel management', href: '/services/hotel-management' },
+  { name: 'Flight ticketing', href: '/flight-ticketing' },
 ];
 
 const tourLinks = [
-  { name: 'All Domestic Tours', href: '/domestic-tours' },
-  { name: 'Kerala Tours', href: '/domestic-tours/kerala' },
-  { name: 'Goa Tours', href: '/domestic-tours/goa' },
-  { name: 'Gujarat Tours', href: '/domestic-tours/gujarat' },
-  { name: 'Mumbai Tours', href: '/domestic-tours/mumbai' },
-  { name: 'Uttar Pradesh Tours', href: '/domestic-tours/up' },
-  { name: 'Maharashtra Tours', href: '/domestic-tours/maharashtra' },
+  { name: 'All domestic tours', href: '/domestic-tours' },
+  { name: 'Kerala', href: '/domestic-tours/kerala' },
+  { name: 'Goa', href: '/domestic-tours/goa' },
+  { name: 'Gujarat', href: '/domestic-tours/gujarat' },
+  { name: 'Mumbai', href: '/domestic-tours/mumbai' },
+  { name: 'Uttar Pradesh', href: '/domestic-tours/up' },
+  { name: 'Maharashtra', href: '/domestic-tours/maharashtra' },
   { name: 'Chardham Yatra', href: '/domestic-tours/chardham' },
-  { name: 'International Tours', href: '/international-tours' },
+  { name: 'International tours', href: '/international-tours' },
 ];
 
-const bookingLinks = [
-  { name: 'Hotels', href: '/services/retail' },
-  { name: 'Service Apartments', href: '/services/corporate' },
-  { name: 'Resort and Villa', href: '/services/retail' },
-  { name: 'Transportation', href: '/transportation' },
-  { name: 'Flight Ticketing', href: '/flight-ticketing' },
+const primary = [
+  { name: 'Hotels', href: '/hotels' },
+  { name: 'Tours', menu: tourLinks, match: '/domestic-tours' },
+  { name: 'Transport', href: '/transportation' },
+  { name: 'Services', menu: serviceLinks, match: '/services' },
+  { name: 'Plan a trip', href: '/plan-trip' },
+  { name: 'About', href: '/about' },
 ];
+
+function Dropdown({ item, open, onToggle, onClose, active }) {
+  const ref = useRef(null);
+  const reduce = useReducedMotion();
+  useEffect(() => {
+    if (!open) return undefined;
+    const onDoc = (e) => ref.current && !ref.current.contains(e.target) && onClose();
+    const onKey = (e) => e.key === 'Escape' && onClose();
+    document.addEventListener('pointerdown', onDoc);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onDoc);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open, onClose]);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-haspopup="true"
+        onClick={onToggle}
+        className={`flex items-center gap-1 rounded-full px-3.5 py-2 text-[13px] transition-colors ${active ? 'text-gold' : 'text-pearl/75 hover:text-pearl'}`}
+      >
+        {item.name}
+        <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: -6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.98 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="glass-nav absolute left-1/2 top-full mt-3 w-60 -translate-x-1/2 rounded-2xl p-2 shadow-2xl"
+          >
+            {item.menu.map((l) => (
+              <NavLink
+                key={l.href}
+                to={l.href}
+                end
+                className={({ isActive }) =>
+                  `block rounded-xl px-3.5 py-2.5 text-sm transition-colors ${isActive ? 'bg-gold/10 text-gold' : 'text-pearl/80 hover:bg-white/5 hover:text-pearl'}`
+                }
+              >
+                {l.name}
+              </NavLink>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [menu, setMenu] = useState(null);
   const [scrolled, setScrolled] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
-  const [toursOpen, setToursOpen] = useState(false);
-  const servicesRef = useRef(null);
-  const toursRef = useRef(null);
-  const location = useLocation();
+  const { pathname } = useLocation();
+  const reduce = useReducedMotion();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
-    setIsOpen(false);
-    setServicesOpen(false);
-    setToursOpen(false);
-  }, [location.pathname]);
+    setMobileOpen(false);
+    setMenu(null);
+  }, [pathname]);
 
   useEffect(() => {
-    const handleClick = (e) => {
-      if (servicesRef.current && !servicesRef.current.contains(e.target)) setServicesOpen(false);
-      if (toursRef.current && !toursRef.current.contains(e.target)) setToursOpen(false);
+    setScrollLocked(mobileOpen);
+    if (!mobileOpen) return undefined;
+    const onKey = (e) => e.key === 'Escape' && setMobileOpen(false);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      setScrollLocked(false);
     };
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
-
-  const isActive = (path) => location.pathname === path;
-  const isServicesActive = location.pathname.startsWith('/services');
-  const isToursActive = location.pathname.startsWith('/domestic-tours');
-
-  const linkClass = (path) =>
-    `text-sm hover:text-emerald-400 transition-colors uppercase tracking-wider ${
-      isActive(path) ? 'text-emerald-500' : 'text-gray-300'
-    }`;
+  }, [mobileOpen]);
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'glass-nav py-3' : 'bg-transparent py-4 md:py-5'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-3">
-            <img
-              src="/logo/zw-logo.jpg"
-              alt="Zen World Hospitality"
-              className="h-10 md:h-12 w-auto object-contain rounded-lg shadow-lg"
-            />
-            <span className="font-playfair font-bold text-xl md:text-2xl tracking-tight uppercase">ZEN WORLD</span>
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 md:pt-5">
+      <nav
+        aria-label="Main"
+        className={`pointer-events-auto flex w-full max-w-6xl items-center justify-between rounded-full py-2 pl-3 pr-2 transition-[background-color,box-shadow,border-color] duration-500 ${
+          scrolled || mobileOpen ? 'glass-nav shadow-[0_20px_60px_-30px_rgba(0,0,0,0.8)]' : 'border border-transparent'
+        }`}
+      >
+        <Link to="/" className="flex items-center gap-2.5 pl-1" aria-label="Zen World Hospitality home">
+          <img src="/logo/zw-logo.jpg" alt="" width="36" height="36" className="h-9 w-9 rounded-full object-cover" />
+          <span className="font-display text-lg tracking-wide text-pearl">Zen World</span>
+        </Link>
+
+        <div className="hidden items-center lg:flex">
+          {primary.map((item) =>
+            item.menu ? (
+              <Dropdown
+                key={item.name}
+                item={item}
+                open={menu === item.name}
+                active={pathname.startsWith(item.match)}
+                onToggle={() => setMenu((m) => (m === item.name ? null : item.name))}
+                onClose={() => setMenu(null)}
+              />
+            ) : (
+              <NavLink
+                key={item.href}
+                to={item.href}
+                className={({ isActive }) =>
+                  `rounded-full px-3.5 py-2 text-[13px] transition-colors ${isActive ? 'text-gold' : 'text-pearl/75 hover:text-pearl'}`
+                }
+              >
+                {item.name}
+              </NavLink>
+            ),
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Link to="/contact" className="hidden rounded-full px-4 py-2 text-[13px] text-pearl/75 transition-colors hover:text-pearl md:inline-flex">
+            Contact
           </Link>
-
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className={linkClass('/')}>Home</Link>
-            <Link to="/about" className={linkClass('/about')}>About Us</Link>
-
-            {/* Services Dropdown */}
-            <div className="relative" ref={servicesRef}>
-              <button onClick={() => { setServicesOpen((o) => !o); setToursOpen(false); }} className={`flex items-center text-sm hover:text-emerald-400 transition-colors uppercase tracking-wider ${isServicesActive ? 'text-emerald-500' : 'text-gray-300'}`}>
-                Services <ChevronDown className={`ml-1 w-4 h-4 transition-transform ${servicesOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {servicesOpen && (
-                <div className="absolute top-full left-0 mt-4 w-64 glass-nav border border-gray-800 rounded-xl shadow-2xl overflow-hidden">
-                  <div className="py-2">
-                    {serviceLinks.map((link) => (
-                      <Link key={link.name} to={link.href} className={`block px-4 py-3 text-sm hover:bg-gray-800/50 hover:text-emerald-400 transition-colors ${isActive(link.href) ? 'text-emerald-500 bg-gray-800/30' : 'text-gray-300'}`}>
-                        {link.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Tours Packages Dropdown */}
-            <div className="relative" ref={toursRef}>
-              <button onClick={() => { setToursOpen((o) => !o); setServicesOpen(false); }} className={`flex items-center text-sm hover:text-emerald-400 transition-colors uppercase tracking-wider ${isToursActive ? 'text-emerald-500' : 'text-gray-300'}`}>
-                Tours Packages <ChevronDown className={`ml-1 w-4 h-4 transition-transform ${toursOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {toursOpen && (
-                <div className="absolute top-full left-0 mt-4 w-64 glass-nav border border-gray-800 rounded-xl shadow-2xl overflow-hidden">
-                  <div className="py-2">
-                    {tourLinks.map((link) => (
-                      <Link key={link.name} to={link.href} className={`block px-4 py-3 text-sm hover:bg-gray-800/50 hover:text-emerald-400 transition-colors ${isActive(link.href) ? 'text-emerald-500 bg-gray-800/30' : 'text-gray-300'}`}>
-                        {link.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <Link to="/transportation" className={linkClass('/transportation')}>Transportation</Link>
-            <Link to="/contact" className={linkClass('/contact')}>Contact Us</Link>
-
-            <a href={CONTACT.phonePrimaryTel} className="flex items-center text-sm bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-full transition-all hover-glow shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)]">
-              <Phone className="w-4 h-4 mr-2" />Call Now
-            </a>
-          </div>
-
-          <button onClick={() => setIsOpen((o) => !o)} className="md:hidden text-gray-300 hover:text-white focus:outline-none p-2">
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          <a
+            href={CONTACT.phonePrimaryTel}
+            className="hidden items-center gap-2 rounded-full bg-gold px-4 py-2.5 text-[13px] font-semibold text-ink-950 transition-colors hover:bg-[#e2c35c] sm:inline-flex"
+          >
+            <Phone className="h-3.5 w-3.5" /> {CONTACT.phonePrimary}
+          </a>
+          <button
+            type="button"
+            onClick={() => setMobileOpen((o) => !o)}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            className="grid h-10 w-10 place-items-center rounded-full text-pearl lg:hidden"
+          >
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
-      </div>
+      </nav>
 
-      <div className={`md:hidden transition-all duration-300 overflow-hidden ${isOpen ? 'max-h-[90vh] opacity-100' : 'max-h-0 opacity-0'}`}>
-        <div className="glass-nav border-t border-b border-gray-800 shadow-2xl">
-          <div className="px-4 py-4 space-y-2 max-h-[80vh] overflow-y-auto">
-            {navLinks.map((link) => (
-              <Link key={link.href} to={link.href} className={`block px-3 py-2.5 text-base font-medium rounded-lg ${isActive(link.href) ? 'text-emerald-400 bg-gray-800' : 'text-gray-300 hover:text-emerald-400 hover:bg-gray-800'}`}>
-                {link.name}
-              </Link>
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            id="mobile-menu"
+            initial={reduce ? false : { opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="glass-nav pointer-events-auto absolute inset-x-3 top-[4.75rem] max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-3xl p-5 lg:hidden"
+          >
+            {[{ title: null, links: [{ name: 'Home', href: '/' }, ...primary.filter((p) => p.href), { name: 'Contact', href: '/contact' }] },
+              { title: 'Tours', links: tourLinks },
+              { title: 'Services', links: serviceLinks }].map((group) => (
+              <div key={group.title ?? 'main'} className="border-b border-gold/10 py-3 last:border-0">
+                {group.title && <p className="eyebrow mb-2 px-2">{group.title}</p>}
+                <div className={group.title ? 'grid grid-cols-2 gap-1' : 'grid gap-1'}>
+                  {group.links.map((l) => (
+                    <NavLink
+                      key={l.href}
+                      to={l.href}
+                      end
+                      className={({ isActive }) =>
+                        `rounded-xl px-2 py-2.5 ${group.title ? 'text-sm' : 'font-display text-2xl'} ${isActive ? 'text-gold' : 'text-pearl/85'}`
+                      }
+                    >
+                      {l.name}
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
             ))}
-            <div className="border-t border-gray-800 my-2 pt-2">
-              <span className="block px-3 py-1.5 text-xs text-gray-500 font-bold uppercase tracking-wider">Services</span>
-              {serviceLinks.map((link) => (
-                <Link key={link.href} to={link.href} className={`block px-3 py-2.5 ml-2 text-sm font-medium rounded-lg ${isActive(link.href) ? 'text-emerald-400 bg-gray-800' : 'text-gray-300 hover:text-emerald-400 hover:bg-gray-800'}`}>
-                  {link.name}
-                </Link>
-              ))}
-            </div>
-            <div className="border-t border-gray-800 my-2 pt-2">
-              <span className="block px-3 py-1.5 text-xs text-gray-500 font-bold uppercase tracking-wider">Tours Packages</span>
-              {tourLinks.map((link) => (
-                <Link key={link.href} to={link.href} className={`block px-3 py-2.5 ml-2 text-sm font-medium rounded-lg ${isActive(link.href) ? 'text-emerald-400 bg-gray-800' : 'text-gray-300 hover:text-emerald-400 hover:bg-gray-800'}`}>
-                  {link.name}
-                </Link>
-              ))}
-            </div>
-            <div className="border-t border-gray-800 my-2 pt-2">
-              <span className="block px-3 py-1.5 text-xs text-gray-500 font-bold uppercase tracking-wider">Booking</span>
-              {bookingLinks.map((link) => (
-                <Link key={link.name} to={link.href} className="block px-3 py-2.5 ml-2 text-sm font-medium rounded-lg text-gray-300 hover:text-emerald-400 hover:bg-gray-800">
-                  {link.name}
-                </Link>
-              ))}
-            </div>
-            <div className="pt-2">
-              <a href={CONTACT.phonePrimaryTel} className="flex items-center justify-center w-full px-3 py-3 text-base font-medium text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg transition-colors">
-                <Phone className="w-4 h-4 mr-2" /> {CONTACT.phonePrimary}
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
+            <a href={CONTACT.phonePrimaryTel} className="mt-3 flex items-center justify-center gap-2 rounded-full bg-gold py-3.5 font-semibold text-ink-950">
+              <Phone className="h-4 w-4" /> {CONTACT.phonePrimary}
+            </a>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
   );
 };
 

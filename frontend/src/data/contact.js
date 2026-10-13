@@ -1,21 +1,18 @@
 // Single source of truth for Zen World Hospitality contact details.
-// Update values here to change them everywhere in the frontend.
+// Partner hotels' own phone numbers and emails are never shown: every booking goes through Zen.
 
 export const CONTACT = {
-  // Primary phone — used for direct call / WhatsApp CTAs
   phonePrimary: '+91 88280 15060',
   phonePrimaryTel: 'tel:+918828015060',
   phonePrimaryWhatsApp: '918828015060',
-  // Secondary phone — shown alongside the primary in contact lists
-  phoneSecondary: '+91 80973 77058',
-  phoneSecondaryTel: 'tel:+918097377058',
-  // Both numbers, used for display strings
-  phones: ['+91 88280 15060', '+91 80973 77058'],
+  phones: ['+91 88280 15060'],
 
-  emailPrimary: 'sales@zenhospitality.in',
-  emailPrimaryMailto: 'mailto:sales@zenhospitality.in',
-  emailSecondary: 'connect.zenworld@gmail.com',
-  emails: ['sales@zenhospitality.in', 'connect.zenworld@gmail.com'],
+  emailPrimary: 'connect.zenworld@gmail.com',
+  emailPrimaryMailto: 'mailto:connect.zenworld@gmail.com',
+  emails: ['connect.zenworld@gmail.com'],
+
+  instagram: 'https://www.instagram.com/zenhospitality1587/',
+  facebook: 'https://www.facebook.com/ZenWorldHospitality',
 
   address: 'Mumbai, Maharashtra, India',
   hours: 'Mon - Sat: 10:00 AM - 7:00 PM',

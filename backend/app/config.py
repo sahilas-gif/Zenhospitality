@@ -33,6 +33,15 @@ class Settings(BaseSettings):
     # JWT Secret - MUST be set via environment variable
     JWT_SECRET_KEY: str
 
+    # Public site used for canonical URLs, sitemap and social previews
+    SITE_URL: str = "https://zenhospitality.in"
+    # Built index.html used as the template for server-rendered hotel pages
+    FRONTEND_INDEX_PATH: str = "/home/zenhospi/public_html/index.html"
+
+    # Gemini request budget (seconds)
+    AI_ATTEMPT_TIMEOUT: float = 25.0
+    AI_TOTAL_TIMEOUT: float = 50.0
+
     model_config = {"env_file": ".env", "extra": "ignore"}
 
 settings = Settings()

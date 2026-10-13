@@ -1,26 +1,20 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_, func
 from typing import List, Optional, Any
 from pydantic import BaseModel
 from app.database import get_db
-from app.models import Package, Enquiry, AiItinerary, User
+from app.models import Package, Enquiry, AiItinerary, User, Hotel, StatusEnum
 from app.schemas import (
-    PackageCreate, PackageResponse, EnquiryCreate, EnquiryResponse,
+    PackageCreate, PackageResponse, EnquiryCreate, EnquiryResponse, EnquiryStatusUpdate,
     AiItineraryRequest, AiItineraryResponse,
     ChatRequest, ChatResponse
 )
-from app.auth import get_current_user
-from app.services.ai_service import generate_custom_itinerary
+from app.auth import require_admin
+from app.services.ai_service import AiUnavailable, CHAT_FALLBACK, generate_custom_itinerary, handle_chat_message
 from app.limiter import limiter
 
 router = APIRouter()
-
-
-def require_admin(current_user: User = Depends(get_current_user)):
-    if not current_user.is_admin:
-        raise HTTPException(status_code=403, detail="Admin access required")
-    return current_user
 
 
 class PaginatedResponse(BaseModel):
@@ -106,8 +100,27 @@ async def delete_package(package_id: int, db: AsyncSession = Depends(get_db), cu
 
 
 @router.post("/enquiries", response_model=EnquiryResponse, status_code=201)
-async def create_enquiry(enquiry: EnquiryCreate, db: AsyncSession = Depends(get_db)):
-    db_enquiry = Enquiry(**enquiry.model_dump())
+@limiter.limit("20/hour")
+async def create_enquiry(request: Request, enquiry: EnquiryCreate, db: AsyncSession = Depends(get_db)):
+    if enquiry.website:
+        raise HTTPException(status_code=400, detail="Invalid submission")
+
+    data = enquiry.model_dump(exclude={"website"})
+    for key in ("check_in", "check_out"):
+        if data[key] is not None:
+            data[key] = data[key].isoformat()
+
+    if enquiry.hotel_id is not None:
+        hotel = await db.get(Hotel, enquiry.hotel_id)
+        if not hotel or not hotel.is_published:
+            raise HTTPException(status_code=422, detail="Hotel not found")
+        data.update(hotel_name=hotel.name, hotel_slug=hotel.slug, hotel_city=hotel.city)
+        data["enquiry_type"] = data["enquiry_type"] or "hotel"
+    if enquiry.package_id is not None and not await db.get(Package, enquiry.package_id):
+        data["package_id"] = None
+    data["enquiry_type"] = data["enquiry_type"] or ("package" if data["package_id"] else "general")
+
+    db_enquiry = Enquiry(**data)
     db.add(db_enquiry)
     await db.commit()
     await db.refresh(db_enquiry)
@@ -119,8 +132,11 @@ async def create_enquiry(enquiry: EnquiryCreate, db: AsyncSession = Depends(get_
 
 @router.get("/admin/enquiries", response_model=List[EnquiryResponse])
 async def list_enquiries(
+    response: Response,
     status: Optional[str] = None,
-    search: Optional[str] = Query(None, description="Search by customer name or phone"),
+    enquiry_type: Optional[str] = None,
+    hotel_id: Optional[int] = None,
+    search: Optional[str] = Query(None, description="Search by customer name, phone or hotel"),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
@@ -129,20 +145,23 @@ async def list_enquiries(
     query = select(Enquiry)
     if status:
         query = query.where(Enquiry.status == status)
+    if enquiry_type:
+        query = query.where(Enquiry.enquiry_type == enquiry_type)
+    if hotel_id:
+        query = query.where(Enquiry.hotel_id == hotel_id)
     if search:
         search_term = f"%{search}%"
         query = query.where(
             or_(
                 Enquiry.customer_name.ilike(search_term),
                 Enquiry.customer_phone.ilike(search_term),
+                Enquiry.hotel_name.ilike(search_term),
             )
         )
 
-    # Get total count
-    count_query = select(func.count()).select_from(query.subquery())
-    total = await db.scalar(count_query)
+    total = await db.scalar(select(func.count()).select_from(query.subquery()))
+    response.headers["X-Total-Count"] = str(total or 0)
 
-    # Apply pagination
     query = query.order_by(Enquiry.id.desc()).offset((page - 1) * page_size).limit(page_size)
     result = await db.execute(query)
     return result.scalars().all()
@@ -151,15 +170,18 @@ async def list_enquiries(
 @router.patch("/admin/enquiries/{enquiry_id}/status", response_model=EnquiryResponse)
 async def update_enquiry_status(
     enquiry_id: int,
-    status: str,
+    status: Optional[str] = None,
+    body: Optional[EnquiryStatusUpdate] = None,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_admin),
 ):
-    result = await db.execute(select(Enquiry).where(Enquiry.id == enquiry_id))
-    enquiry = result.scalar_one_or_none()
+    new_status = (body.status if body else None) or status
+    if new_status not in {s.value for s in StatusEnum}:
+        raise HTTPException(status_code=422, detail="Invalid status")
+    enquiry = await db.get(Enquiry, enquiry_id)
     if not enquiry:
         raise HTTPException(status_code=404, detail="Enquiry not found")
-    enquiry.status = status
+    enquiry.status = new_status
     await db.commit()
     await db.refresh(enquiry)
     return enquiry
@@ -175,15 +197,23 @@ async def create_ai_itinerary(
     request_data: AiItineraryRequest,
     db: AsyncSession = Depends(get_db)
 ):
+    hotels = await _planner_hotels(db, request_data.destination, request_data.hotel_slugs)
     try:
         itinerary_data = await generate_custom_itinerary(
             request_data.destination,
             request_data.duration_days,
             request_data.budget,
             request_data.interests,
+            travellers=request_data.travellers,
+            travel_month=request_data.travel_month,
+            pace=request_data.pace,
+            hotels=hotels,
         )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="AI generation failed")
+    except AiUnavailable:
+        raise HTTPException(
+            status_code=503,
+            detail="The planner is busy right now. Please try again in a minute, or WhatsApp us for a custom plan.",
+        )
 
     db_ai_itinerary = AiItinerary(
         prompt=request_data.interests,
@@ -200,12 +230,31 @@ async def create_ai_itinerary(
 
 @router.post("/ai/chat", response_model=ChatResponse)
 @limiter.limit("30/minute")
-async def chat_with_ai(request: Request, request_data: ChatRequest):
-    from app.services.ai_service import handle_chat_message
+async def chat_with_ai(request: Request, request_data: ChatRequest, db: AsyncSession = Depends(get_db)):
+    messages = [{"role": msg.role, "content": msg.content} for msg in request_data.messages]
+    hotels = await _planner_hotels(db, "", [], limit=12)
     try:
-        # Convert Pydantic models to dicts for the service function
-        messages = [{"role": msg.role, "content": msg.content} for msg in request_data.messages]
-        response_text = await handle_chat_message(messages)
-        return ChatResponse(response=response_text)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Chat service temporarily unavailable")
+        return ChatResponse(response=await handle_chat_message(messages, hotels))
+    except AiUnavailable:
+        return ChatResponse(response=CHAT_FALLBACK, fallback=True)
+
+
+async def _planner_hotels(db: AsyncSession, destination: str, slugs: List[str], limit: int = 8) -> List[dict]:
+    query = select(Hotel).where(Hotel.is_published.is_(True))
+    filters = []
+    if slugs:
+        filters.append(Hotel.slug.in_(slugs))
+    words = [w for w in destination.replace(",", " ").split() if len(w) > 2]
+    for w in words:
+        filters.append(Hotel.city.ilike(f"%{w}%"))
+        filters.append(Hotel.locality.ilike(f"%{w}%"))
+        filters.append(Hotel.state.ilike(f"%{w}%"))
+    if filters:
+        query = query.where(or_(*filters))
+    elif destination:
+        return []
+    result = await db.execute(query.order_by(Hotel.sort_order, Hotel.id).limit(limit))
+    return [
+        {"slug": h.slug, "name": h.name, "city": h.city, "locality": h.locality, "summary": h.summary}
+        for h in result.scalars().all()
+    ]

@@ -38,11 +38,11 @@ const HotelManagementPage = () => (
 
           <div className="relative rounded-3xl overflow-hidden shadow-2xl group h-full min-h-[500px]">
             <div className="absolute inset-0 bg-[url('/hotel-management-bg.jpg')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1c] via-[#0a0f1c]/60 to-[#0a0f1c]/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#060d17] via-[#060d17]/60 to-[#060d17]/20" />
             
             <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
               <div className="space-y-3 mb-6">
-                <div className="bg-[#0a0f1c]/70 p-4 rounded-2xl flex items-center gap-4 backdrop-blur-md border border-white/10 hover:border-emerald-500/50 transition-colors">
+                <div className="bg-[#060d17]/70 p-4 rounded-2xl flex items-center gap-4 backdrop-blur-md border border-white/10 hover:border-emerald-500/50 transition-colors">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
                     <Building2 className="w-5 h-5 text-emerald-400" />
                   </div>
@@ -52,7 +52,7 @@ const HotelManagementPage = () => (
                   </div>
                 </div>
 
-                <div className="bg-[#0a0f1c]/70 p-4 rounded-2xl flex items-center gap-4 backdrop-blur-md border border-white/10 hover:border-emerald-500/50 transition-colors">
+                <div className="bg-[#060d17]/70 p-4 rounded-2xl flex items-center gap-4 backdrop-blur-md border border-white/10 hover:border-emerald-500/50 transition-colors">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
                     <Key className="w-5 h-5 text-emerald-400" />
                   </div>
@@ -62,7 +62,7 @@ const HotelManagementPage = () => (
                   </div>
                 </div>
                 
-                <div className="bg-[#0a0f1c]/70 p-4 rounded-2xl flex items-center gap-4 backdrop-blur-md border border-white/10 hover:border-emerald-500/50 transition-colors">
+                <div className="bg-[#060d17]/70 p-4 rounded-2xl flex items-center gap-4 backdrop-blur-md border border-white/10 hover:border-emerald-500/50 transition-colors">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
                     <HeadphonesIcon className="w-5 h-5 text-emerald-400" />
                   </div>

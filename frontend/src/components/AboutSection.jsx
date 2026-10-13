@@ -6,7 +6,7 @@ const AboutSection = () => (
       <div className="text-center mb-12 md:mb-16">
         <h2 className="text-emerald-500 font-medium tracking-widest uppercase text-sm mb-2">About Us</h2>
         <h3 className="text-3xl md:text-5xl font-playfair font-bold text-white mb-6">Redefining Hospitality</h3>
-        <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-[#d4a854] mx-auto rounded-full" />
+        <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-[#d4af37] mx-auto rounded-full" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -16,8 +16,8 @@ const AboutSection = () => (
           { icon: Star, color: 'blue', title: 'Our Core Values', desc: null, list: ['Excellence in Service', 'Integrity & Trust', 'Innovation in Hospitality', 'Customer-Centric Approach'] },
         ].map((item, idx) => (
           <div key={idx} className={`glass-card p-6 md:p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300 ${item.color === 'gold' ? 'border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.1)]' : ''}`}>
-            <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${item.color === 'emerald' ? 'bg-emerald-500/20' : item.color === 'gold' ? 'bg-[#d4a854]/20' : 'bg-blue-500/20'}`}>
-              <item.icon className={`w-8 h-8 ${item.color === 'emerald' ? 'text-emerald-400' : item.color === 'gold' ? 'text-[#d4a854]' : 'text-blue-400'}`} />
+            <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${item.color === 'emerald' ? 'bg-emerald-500/20' : item.color === 'gold' ? 'bg-[#d4af37]/20' : 'bg-blue-500/20'}`}>
+              <item.icon className={`w-8 h-8 ${item.color === 'emerald' ? 'text-emerald-400' : item.color === 'gold' ? 'text-[#d4af37]' : 'text-blue-400'}`} />
             </div>
             <h4 className="text-xl md:text-2xl font-playfair font-semibold text-white mb-4">{item.title}</h4>
             {item.desc ? (

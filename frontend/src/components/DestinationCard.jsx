@@ -25,7 +25,7 @@ const DestinationCard = ({ tour, onEnquire }) => {
           <div className="absolute inset-0 bg-gray-800" />
         )}
         {tour.isFlagship && (
-          <div className="absolute top-3 left-3 bg-emerald-600 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider shadow-sm">
+          <div className="absolute top-3 left-3 bg-emerald-600 text-ink-950 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider shadow-sm">
             Signature Tour
           </div>
         )}

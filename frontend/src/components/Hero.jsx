@@ -1,54 +1,95 @@
-import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
+import { ArrowDown, ArrowRight, MessageCircle } from 'lucide-react';
+import MagneticButton from './motion/MagneticButton';
+import TextReveal from './motion/TextReveal';
+import { whatsappUrl } from '../lib/whatsapp';
 
-const Hero = ({ title, subtitle, description }) => (
-  <section className="relative min-h-[90vh] md:min-h-screen flex items-center justify-center overflow-hidden">
-    <div className="absolute inset-0 z-0">
-      {/* Real travel background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/hero/resort-sunset.jpg')" }}
-      />
-      {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-[#0a0f1c]/65" />
-      {/* Bottom gradient fade */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c]/40 via-transparent to-[#0a0f1c]" />
-    </div>
+const isSafeVideo = (url) => typeof url === 'string' && /^(https:\/\/|\/)[^\s"'<>]+\.(mp4|webm)(\?.*)?$/i.test(url);
 
-    <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-24 md:pt-28">
-      <span className="inline-block py-1 px-3 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs md:text-sm font-semibold tracking-widest uppercase mb-5 md:mb-6 animate-fade-in" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
-        {subtitle || 'Welcome to Zen World Hospitality'}
-      </span>
+const Hero = ({ title, subtitle, description, videoUrl }) => {
+  const ref = useRef(null);
+  const reduce = useReducedMotion();
+  const [videoReady, setVideoReady] = useState(false);
+  const [saveData, setSaveData] = useState(false);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
+  const y = useTransform(scrollYProgress, [0, 1], reduce ? ['0%', '0%'] : ['0%', '18%']);
+  const fade = useTransform(scrollYProgress, [0, 0.7], [1, reduce ? 1 : 0]);
 
-      <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold font-playfair text-white mb-5 md:mb-6 leading-tight animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-        {title || (
-          <>
-            Elevating <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-[#d4a854]">Experiences</span>.<br />
-            Empowering Growth.
-          </>
+  useEffect(() => {
+    setSaveData(Boolean(navigator.connection?.saveData));
+  }, []);
+
+  const showVideo = isSafeVideo(videoUrl) && !reduce && !saveData;
+
+  return (
+    <section ref={ref} className="relative flex min-h-[100svh] items-end overflow-hidden pb-16 md:items-center md:pb-0">
+      <motion.div style={{ y }} className="absolute inset-0 -z-10 will-change-transform">
+        <picture className="block h-full w-full">
+          <source media="(max-width: 900px)" srcSet="/images/hero/resort-sunset-900.avif" type="image/avif" />
+          <source media="(max-width: 900px)" srcSet="/images/hero/resort-sunset-900.webp" type="image/webp" />
+          <source srcSet="/images/hero/resort-sunset.avif" type="image/avif" />
+          <source srcSet="/images/hero/resort-sunset.webp" type="image/webp" />
+          <img src="/images/hero/resort-sunset.jpg" alt="" fetchPriority="high" className="h-full w-full scale-105 object-cover" />
+        </picture>
+        {showVideo && (
+          <video
+            src={videoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="none"
+            onCanPlay={() => setVideoReady(true)}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${videoReady ? 'opacity-100' : 'opacity-0'}`}
+          />
         )}
-      </h1>
+        <div className="absolute inset-0 bg-gradient-to-b from-ink-950/70 via-ink-950/35 to-ink-950" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink-950/80 via-ink-950/20 to-transparent" />
+      </motion.div>
 
-      <p className="text-base md:text-xl text-gray-200 mb-8 md:mb-10 max-w-3xl mx-auto font-light leading-relaxed animate-fade-in" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
-        {description || 'End-to-end hospitality, travel, and strategic hotel management solutions tailored for hotels, resorts, businesses, and global travelers.'}
-      </p>
+      <motion.div style={{ opacity: fade }} className="mx-auto w-full max-w-7xl px-5 md:px-8">
+        <div className="max-w-3xl">
+          <motion.p
+            initial={reduce ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="eyebrow mb-6 flex items-center gap-3"
+          >
+            <span className="h-px w-10 bg-gold" /> {subtitle || 'Zen World Hospitality, Mumbai'}
+          </motion.p>
+          <TextReveal as="h1" delay={0.15} className="text-[2.9rem] leading-[0.98] text-pearl sm:text-6xl md:text-7xl lg:text-[5.6rem]">
+            {title || 'Stays, journeys and events, quietly handled.'}
+          </TextReveal>
+          <motion.p
+            initial={reduce ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.55 }}
+            className="mt-7 max-w-xl text-base leading-relaxed text-pearl/75 md:text-lg"
+          >
+            {description || 'Partner hotels with best rates via Zen, curated tours across India, outstation cabs and corporate travel, all through one team you can WhatsApp.'}
+          </motion.p>
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="mt-10 flex flex-col gap-3 sm:flex-row"
+          >
+            <MagneticButton to="/hotels">
+              Explore hotels <ArrowRight className="h-4 w-4" />
+            </MagneticButton>
+            <MagneticButton variant="ghost" href={whatsappUrl('Hi Zen World Hospitality, I would like help planning a trip.')} target="_blank" rel="noreferrer">
+              <MessageCircle className="h-4 w-4" /> WhatsApp a planner
+            </MagneticButton>
+          </motion.div>
+        </div>
+      </motion.div>
 
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 animate-fade-in" style={{ animationDelay: '0.7s', animationFillMode: 'both' }}>
-        <Link to="/services" className="w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full font-medium transition-all transform hover:scale-105 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-          Explore Services <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5" />
-        </Link>
-        <Link to="/domestic-tours" className="w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 glass-card hover:bg-white/10 text-white rounded-full font-medium transition-all text-center">
-          View Tours
-        </Link>
+      <div className="absolute bottom-8 right-8 hidden items-center gap-3 text-xs tracking-[0.3em] text-pearl/50 md:flex">
+        SCROLL <ArrowDown className="h-4 w-4 text-gold" />
       </div>
-    </div>
-
-    <div className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 animate-bounce hidden sm:block">
-      <div className="w-[26px] h-[42px] rounded-full border-2 border-white/30 flex justify-center p-2">
-        <div className="w-1 h-3 bg-emerald-500 rounded-full" />
-      </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default Hero;

@@ -2,9 +2,8 @@
 
 Creates (or updates) the admin portal user from the configured credentials.
 
-Credentials come from app.config.Settings, which reads the ADMIN_USERNAME /
-ADMIN_PASSWORD environment variables and falls back to the package defaults
-(zenhospi / Zen@2804) when they are not set.
+Credentials come from app.config.Settings, which requires the ADMIN_USERNAME /
+ADMIN_PASSWORD environment variables. There are no built-in defaults.
 """
 import asyncio
 

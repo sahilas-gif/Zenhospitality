@@ -4,7 +4,7 @@ import aiofiles
 from pathlib import Path
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, status
 from typing import List
-from app.auth import get_current_user
+from app.auth import require_admin
 from app.models import User
 
 router = APIRouter()
@@ -77,7 +77,8 @@ async def validate_image_file(file: UploadFile) -> tuple[bytes, str]:
 
 
 @router.post("")
-async def upload_images(files: List[UploadFile] = File(...), current_user: User = Depends(get_current_user)):
+@router.post("/images")
+async def upload_images(files: List[UploadFile] = File(...), current_user: User = Depends(require_admin)):
     if len(files) > 10:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

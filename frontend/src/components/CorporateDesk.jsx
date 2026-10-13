@@ -9,7 +9,7 @@ const features = [
 ];
 
 const CorporateDesk = () => (
-  <section className="py-16 md:py-24 bg-[#111827] relative">
+  <section className="py-16 md:py-24 bg-[#0a192f] relative">
     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-900/20 rounded-full blur-[120px] pointer-events-none" />
 
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

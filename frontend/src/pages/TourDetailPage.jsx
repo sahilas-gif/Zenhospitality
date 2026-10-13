@@ -38,7 +38,7 @@ const TourDetailPage = () => {
 
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0f1c]">
+      <div className="min-h-screen flex items-center justify-center bg-[#060d17]">
         <div className="text-center">
           <h2 className="text-3xl font-playfair font-bold text-white mb-4">Tour Not Found</h2>
           <p className="text-gray-400 mb-6">The tour page you're looking for doesn't exist.</p>
@@ -58,7 +58,7 @@ const TourDetailPage = () => {
       <PageHeader title={title} subtitle={subtitle} />
 
       {/* Back link */}
-      <div className="bg-[#0a0f1c] py-4">
+      <div className="bg-[#060d17] py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link to="/domestic-tours" className="inline-flex items-center text-emerald-400 hover:text-emerald-300 text-sm font-medium transition-colors">
             <ArrowLeft className="w-4 h-4 mr-1" /> Back to All Domestic Tours
@@ -67,7 +67,7 @@ const TourDetailPage = () => {
       </div>
 
       {/* Tour Cards */}
-      <section className="py-12 md:py-20 bg-[#0a0f1c]">
+      <section className="py-12 md:py-20 bg-[#060d17]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-12">
             {tours.map((tour, idx) => {
@@ -88,7 +88,7 @@ const TourDetailPage = () => {
                           className="w-full h-64 lg:h-full object-cover"
                           loading="lazy"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1c] via-transparent to-transparent lg:bg-gradient-to-r" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#060d17] via-transparent to-transparent lg:bg-gradient-to-r" />
                         <div className="absolute bottom-4 left-4 right-4 lg:bottom-6 lg:left-6">
                           {tour.rating && (
                             <div className="inline-flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-amber-400 mb-2">
@@ -172,7 +172,7 @@ const TourDetailPage = () => {
                             href={`https://wa.me/${CONTACT.phonePrimaryWhatsApp}?text=${encodeURIComponent('Hi Zen World Hospitality, I would like to know more about the ' + tour.title + '.')}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-full font-bold text-sm transition-all hover-glow"
+                            className="inline-flex items-center bg-emerald-600 hover:bg-emerald-500 text-ink-950 px-5 py-2.5 rounded-full font-bold text-sm transition-all hover-glow"
                           >
                             <Phone className="w-4 h-4 mr-2" /> Enquire Now
                           </a>
@@ -194,7 +194,7 @@ const TourDetailPage = () => {
       </section>
 
       {/* Contact CTA */}
-      <section className="py-12 bg-[#0f2e24] border-t border-[#c9a86a]/20">
+      <section className="py-12 bg-[#1e293b] border-t border-[#d4af37]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h3 className="text-[#e8d5a8] font-bold uppercase tracking-widest text-sm mb-3">Can't find your ideal tour?</h3>
           <p className="text-gray-300 text-sm max-w-xl mx-auto mb-6">
@@ -204,7 +204,7 @@ const TourDetailPage = () => {
             href={`https://wa.me/${CONTACT.phonePrimaryWhatsApp}?text=${encodeURIComponent('Hi, I need a custom tour package for ' + title + '.')}`}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-full font-bold transition-all hover-glow"
+            className="inline-flex items-center bg-emerald-600 hover:bg-emerald-500 text-ink-950 px-6 py-3 rounded-full font-bold transition-all hover-glow"
           >
             <Phone className="w-4 h-4 mr-2" /> Plan Custom Tour — {CONTACT.phonePrimary}
           </a>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MapPin, Navigation, Calendar, Users, Send, ChevronDown } from 'lucide-react';
-import { CONTACT } from '../data/contact';
+import QuoteDrawer from '../components/QuoteDrawer';
 import { FLEET, FLEET_CATEGORIES, RATE_CHART, TRANSPORT_SERVICES, TRANSPORT_FAQ, suggestVehicles } from '../data/fleet';
 
 const TRIP_TYPES = ['One Way', 'Round Trip', 'Hourly', 'Airport', 'Wedding', 'Corporate'];
@@ -12,7 +12,8 @@ export default function TransportationPage() {
   const [category, setCategory] = useState('All');
   const [pax, setPax] = useState(12);
   const [openFaq, setOpenFaq] = useState(null);
-  const [form, setForm] = useState({ tripType: 'One Way', vehicleCat: 'All Cars', pickup: '', drop: '', datetime: '', pax: '4', name: '', phone: '' });
+  const [form, setForm] = useState({ tripType: 'One Way', vehicleCat: 'All Cars', pickup: '', drop: '', datetime: '', pax: '4' });
+  const [quote, setQuote] = useState(false);
 
   const vehicles = category === 'All' ? FLEET : FLEET.filter((v) => v.category === category);
   const suggestions = suggestVehicles(pax);
@@ -25,19 +26,18 @@ export default function TransportationPage() {
 
   const submit = (e) => {
     e.preventDefault();
-    if (!form.name || !form.phone || !form.pickup) {
-      alert('Please fill Name, Phone, and Pickup Location');
+    if (!form.pickup) {
+      alert('Please add a pickup location');
       return;
     }
-    const text = `*New Transport Enquiry - Zen Hospitality*\n\n*Trip Type:* ${form.tripType}\n*Vehicle:* ${form.vehicleCat}\n*Pickup:* ${form.pickup}\n*Drop:* ${form.drop}\n*DateTime:* ${form.datetime}\n*Passengers:* ${form.pax}\n*Name:* ${form.name}\n*Phone:* ${form.phone}\n\n_Please share best quote. Mumbai to Maharashtra routes._`;
-    window.open(`https://wa.me/${CONTACT.phonePrimaryWhatsApp}?text=${encodeURIComponent(text)}`, '_blank');
+    setQuote(true);
   };
 
   return (
     <div className="pt-20 min-h-screen bg-[#0A0A0A] text-[#EDE8E0]">
       <section className="mx-auto max-w-[1440px] px-5 lg:px-8 py-10 lg:py-16 grid lg:grid-cols-[1.15fr_0.85fr] gap-10">
         <div>
-          <p className="inline-flex px-3 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[11px] tracking-widest text-[#C9A86A]">MUMBAI • THANE • BADLAPUR • PAN-MAHARASHTRA</p>
+          <p className="inline-flex px-3 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[11px] tracking-widest text-[#d4af37]">MUMBAI • THANE • BADLAPUR • PAN-MAHARASHTRA</p>
           <h1 className="font-playfair text-[38px] lg:text-[60px] leading-[0.95] font-bold mt-6">One Stop For<br /><span className="italic text-[#D4AF37]">Every Ride</span><br />Car, Tempo<br />Traveller &amp; Bus</h1>
           <p className="text-[16px] lg:text-[18px] leading-[1.6] text-[#CFC9BD]/70 mt-6 max-w-[560px]">From 4-seater sedans to 49-seater luxury coaches — AC, chauffeur-driven fleet for city, outstation, airport, wedding, and corporate needs across Maharashtra.</p>
         </div>
@@ -69,11 +69,7 @@ export default function TransportationPage() {
                 <input type="number" min="1" max="49" value={form.pax} onChange={set('pax')} className={inputClass} />
               </label>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <input aria-label="Your name" value={form.name} onChange={set('name')} placeholder="Your Name" className={inputClass} />
-              <input aria-label="WhatsApp number" value={form.phone} onChange={set('phone')} placeholder="WhatsApp Number" className={inputClass} />
-            </div>
-            <button type="submit" className="w-full h-12 bg-[#D4AF37] text-black font-semibold rounded-[12px] flex items-center justify-center gap-2">Get Quote on WhatsApp <Send size={16} /></button>
+            <button type="submit" className="w-full h-12 bg-[#D4AF37] text-ink-950 font-semibold rounded-[12px] flex items-center justify-center gap-2">Get Quote on WhatsApp <Send size={16} /></button>
           </form>
         </div>
       </section>
@@ -88,12 +84,12 @@ export default function TransportationPage() {
           {vehicles.map((v) => (
             <article key={v.id} className="rounded-[20px] bg-[#121212] border border-white/[0.06] p-4">
               <h3 className="font-playfair text-[17px] font-bold">{v.name} {v.popular && <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#D4AF37] text-black">POPULAR</span>}</h3>
-              <p className="text-[11px] text-[#C9A86A] mt-1">{v.seater} • {v.type}</p>
+              <p className="text-[11px] text-[#d4af37] mt-1">{v.seater} • {v.type}</p>
               <p className="text-[11px] text-white/40 mt-1">{v.ideal}</p>
               <div className="mt-3 flex flex-wrap gap-1.5">{v.features.map((f) => <span key={f} className="text-[10px] px-2 py-1 rounded-full bg-white/[0.04] text-white/60">{f}</span>)}</div>
               <div className="mt-4 flex items-center justify-between">
                 <div><div className="text-[18px] font-semibold">{v.price}</div><div className="text-[11px] text-white/40">Day rent {v.dayRent}</div></div>
-                <button onClick={() => pickVehicle(v)} className="h-9 px-4 rounded-full border border-[#D4AF37]/20 text-[12px] text-[#C9A86A]">Enquire</button>
+                <button onClick={() => pickVehicle(v)} className="h-9 px-4 rounded-full border border-[#D4AF37]/20 text-[12px] text-[#d4af37]">Enquire</button>
               </div>
             </article>
           ))}
@@ -109,7 +105,7 @@ export default function TransportationPage() {
         <div className="mt-6 grid sm:grid-cols-3 gap-3">
           {suggestions.map((v) => (
             <button key={v.id} onClick={() => pickVehicle(v)} className="text-left rounded-[18px] bg-[#121212] border border-white/5 p-4">
-              <div className="text-[11px] text-[#C9A86A]">{v.seater}</div>
+              <div className="text-[11px] text-[#d4af37]">{v.seater}</div>
               <div className="font-playfair text-[18px] font-bold mt-1">{v.name}</div>
               <div className="text-[14px] font-semibold mt-2">{v.price}</div>
             </button>
@@ -151,6 +147,24 @@ export default function TransportationPage() {
           ))}
         </div>
       </section>
+      <QuoteDrawer
+        open={quote}
+        onClose={() => setQuote(false)}
+        context={{
+          type: 'transport',
+          title: `${form.tripType}: ${form.pickup}${form.drop ? ` to ${form.drop}` : ''}`,
+          subtitle: form.vehicleCat,
+          stay: false,
+          extra: [
+            ['Trip', form.tripType],
+            ['Vehicle', form.vehicleCat],
+            ['Pickup', form.pickup],
+            ['Drop', form.drop],
+            ['When', form.datetime],
+            ['Passengers', form.pax],
+          ],
+        }}
+      />
     </div>
   );
 }

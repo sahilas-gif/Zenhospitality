@@ -1,88 +1,158 @@
 @import "tailwindcss";
+@import "@fontsource-variable/cormorant-garamond";
+@import "@fontsource-variable/plus-jakarta-sans";
 
 @theme {
-  --color-navy-900: #0a0f1c;
-  --color-navy-800: #111827;
-  --color-navy-950: #060a14;
-  --color-emerald-500: #10b981;
-  --color-emerald-600: #059669;
-  --color-gold-400: #f59e0b;
-  --color-gold-500: #d4a854;
-  --font-inter: "Inter", sans-serif;
-  --font-playfair: "Playfair Display", serif;
-  --animate-fade-in: fadeIn 0.8s ease-out forwards;
-  --animate-fade-in-up: fadeInUp 0.6s ease-out forwards;
-  --animate-pulse-glow: pulseGlow 2s infinite;
+  /* Zen palette */
+  --color-ink-950: #060d17;
+  --color-ink-900: #0a192f;
+  --color-ink-800: #1e293b;
+  --color-ink-700: #334155;
+  --color-gold: #d4af37;
+  --color-gold-deep: #b48a28;
+  --color-pearl: #f8fafc;
+  --color-mist: #f1f5f9;
+
+  /* Legacy names re-pointed at the new palette so older pages follow along */
+  --color-navy-950: #060d17;
+  --color-navy-900: #0a192f;
+  --color-navy-800: #1e293b;
+  --color-gold-400: #e2c35c;
+  --color-gold-500: #d4af37;
+  --color-emerald-100: #f6ecc8;
+  --color-emerald-200: #efdc9e;
+  --color-emerald-300: #e7cf7f;
+  --color-emerald-400: #e2c35c;
+  --color-emerald-500: #d4af37;
+  --color-emerald-600: #b48a28;
+  --color-emerald-700: #8f6c1d;
+  --color-emerald-800: #5e4713;
+  --color-emerald-900: #2a210c;
+  --color-teal-400: #e2c35c;
+  --color-teal-500: #d4af37;
+  --color-teal-600: #b48a28;
+
+  --font-display: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-playfair: var(--font-display);
+  --font-inter: var(--font-sans);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-fade-in: fadeIn 0.8s var(--ease-out-expo) forwards;
+  --animate-fade-in-up: fadeInUp 0.6s var(--ease-out-expo) forwards;
   --animate-float: float 6s ease-in-out infinite;
 }
 
+html {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: var(--color-ink-950);
+}
+
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
 body {
-  background-color: var(--color-navy-900);
-  color: #ffffff;
-  font-family: var(--font-inter);
+  background-color: var(--color-ink-950);
+  color: var(--color-pearl);
+  font-family: var(--font-sans);
   margin: 0;
-  padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   max-width: 100vw;
   overflow-x: hidden;
 }
 
-html {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-playfair);
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--color-navy-900); }
-::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #374151; }
+::-webkit-scrollbar-track { background: var(--color-ink-950); }
+::-webkit-scrollbar-thumb { background: var(--color-ink-700); border-radius: 4px; }
 
-::selection { background: rgba(16, 185, 129, 0.3); }
+::selection { background: rgb(212 175 55 / 0.35); color: var(--color-pearl); }
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+/* Film grain over the whole site; pointer-events none so it never blocks input */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@utility hairline {
+  border: 1px solid rgb(212 175 55 / 0.18);
+}
+
+@utility glow-gold {
+  background: radial-gradient(closest-side, rgb(212 175 55 / 0.16), transparent);
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
 
 .glass-card {
-  background: rgba(17, 24, 39, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  background: rgb(10 25 47 / 0.62);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgb(212 175 55 / 0.14);
 }
 
 .glass-nav {
-  background: rgba(10, 15, 28, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgb(6 13 23 / 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgb(212 175 55 / 0.16);
 }
 
+.text-gradient {
+  background: linear-gradient(100deg, #f6ecc8, #d4af37 45%, #b48a28);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
+  from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.5); }
-  50% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.8); }
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-8px); }
 }
 
-.hover-glow:hover {
-  animation: pulseGlow 2s infinite;
-}
-
-.text-gradient {
-  -webkit-text-fill-color: transparent;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

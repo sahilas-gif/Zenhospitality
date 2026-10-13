@@ -1,0 +1,5 @@
+CONTACT_PHONE_DISPLAY = "+91 88280 15060"
+CONTACT_WHATSAPP = "918828015060"
+CONTACT_EMAIL = "connect.zenworld@gmail.com"
+INSTAGRAM_URL = "https://www.instagram.com/zenhospitality1587/"
+FACEBOOK_URL = "https://www.facebook.com/ZenWorldHospitality"

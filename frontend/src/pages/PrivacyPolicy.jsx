@@ -4,7 +4,7 @@ const PrivacyPolicy = () => (
   <div>
     <PageHeader title="Privacy Policy" subtitle="Your privacy is critically important to us." />
     
-    <div className="py-16 bg-[#0a0f1c]">
+    <div className="py-16 bg-[#060d17]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-gray-300 space-y-8">
         <section>
           <h2 className="text-2xl font-playfair font-bold text-white mb-4">1. Information We Collect</h2>
@@ -37,7 +37,7 @@ const PrivacyPolicy = () => (
         <section>
           <h2 className="text-2xl font-playfair font-bold text-white mb-4">5. Contact Us</h2>
           <p className="leading-relaxed">
-            If you have any questions about this Privacy Policy, please contact us at sales@zenhospitality.in or connect.zenworld@gmail.com, or call us at +91 88280 15060 / +91 80973 77058.
+            If you have any questions about this Privacy Policy, please contact us at connect.zenworld@gmail.com, or call or WhatsApp us on +91 88280 15060.
           </p>
         </section>
       </div>
