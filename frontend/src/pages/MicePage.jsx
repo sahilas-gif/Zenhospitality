@@ -1,23 +1,26 @@
 import PageHeader from '../components/PageHeader';
 import { Users, Calendar, Award, Mic } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSeo } from '../lib/seo';
 
 const items = [
-  { icon: Users, title: 'Meetings', desc: 'Seamlessly executed corporate meetings and offsites.' },
-  { icon: Award, title: 'Incentives', desc: 'Rewarding travel experiences for your top performers.' },
-  { icon: Mic, title: 'Conferences', desc: 'End-to-end management of large-scale industry events.' },
-  { icon: Calendar, title: 'Exhibitions', desc: 'Strategic planning and accommodation for global exhibitions.' },
+  { icon: Users, title: 'Meetings', desc: 'A room, a projector and rooms for the night, for a board meeting or an offsite.' },
+  { icon: Award, title: 'Incentives', desc: 'A trip for the people you want to thank, with the dates locked in.' },
+  { icon: Mic, title: 'Conferences', desc: 'Hall, stay and airport transfers for a larger industry event.' },
+  { icon: Calendar, title: 'Exhibitions', desc: 'Rooms and local transport for a team attending a show.' },
 ];
 
-const MicePage = () => (
+const MicePage = () => {
+  useSeo('MICE and events, Mumbai', 'Meetings, incentives, conferences and exhibitions in Mumbai, with rooms in Andheri or Lonavala and cars for the group.');
+  return (
   <div>
     <PageHeader title="MICE & Event Accommodations" subtitle="Meetings, Incentives, Conferences, and Exhibitions Management." />
     <section className="py-16 md:py-20 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 md:mb-16">
-          <h2 className="text-2xl md:text-4xl font-bold font-playfair mb-5 md:mb-6">Unforgettable Events</h2>
+          <h2 className="text-2xl md:text-4xl font-bold font-playfair mb-5 md:mb-6">Meetings and events</h2>
           <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base">
-            We specialize in creating bespoke MICE solutions that perfectly balance business objectives with memorable experiences. From intimate board meetings to large-scale conferences, our expert team handles every detail.
+            A board meeting for eight or a conference for a few hundred. Tell us the city and the dates. We book the stay, the hall and the cars.
           </p>
         </div>
 
@@ -38,6 +41,7 @@ const MicePage = () => (
       </div>
     </section>
   </div>
-);
+  );
+};
 
 export default MicePage;

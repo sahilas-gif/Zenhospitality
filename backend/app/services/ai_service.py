@@ -1,6 +1,9 @@
 import asyncio
+import json
 import logging
 import time
+import urllib.error
+import urllib.request
 from typing import List, Optional
 
 from google import genai
@@ -16,6 +19,34 @@ _client = None
 
 class AiUnavailable(Exception):
     """Raised when no model produced a valid answer within the time budget."""
+
+
+def _generate(model: str, prompt: str, system_instruction: str, as_json: bool = False) -> str:
+    """Call generateContent directly. The installed SDK's interactions call does not return from this server."""
+    if not settings.GEMINI_API_KEY:
+        raise AiUnavailable("not configured")
+    payload = {
+        "system_instruction": {"parts": [{"text": system_instruction}]},
+        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+    }
+    if as_json:
+        payload["generationConfig"] = {"responseMimeType": "application/json"}
+    body = json.dumps(payload).encode()
+    request = urllib.request.Request(
+        f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+        data=body,
+        headers={"Content-Type": "application/json", "X-goog-api-key": settings.GEMINI_API_KEY},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=35) as response:
+            payload = json.loads(response.read().decode())
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode(errors="replace")[:300]
+        raise RuntimeError(f"HTTP {exc.code} {detail}") from exc
+    parts = payload["candidates"][0]["content"]["parts"]
+    text = "".join(part.get("text", "") for part in parts if "text" in part)
+    return text
 
 
 def _get_client():
@@ -73,7 +104,7 @@ async def _run_chain(models: List[str], call) -> object:
             )
         except Exception as e:  # timeout, quota, invalid output
             last_error = e
-            logger.warning("Gemini model %s failed: %s", model, type(e).__name__)
+            logger.warning("Gemini model %s failed: %s", model, str(e)[:180])
     raise AiUnavailable(str(last_error) if last_error else "timeout")
 
 
@@ -120,7 +151,10 @@ async def generate_custom_itinerary(
         + "\n\nRules: return exactly the requested number of days. When a partner hotel suits the day, "
         "set hotel_slug to its slug and name it in accommodation_suggestion; otherwise leave hotel_slug "
         "empty and describe the kind of stay. Never invent hotel names as partners, prices, phone numbers, "
-        "emails or links. Costs are rough ranges in INR."
+        "emails or links. Costs are rough ranges in INR. Reply with JSON only, in this shape and no other keys: "
+        '{"destination":"","duration_days":1,"summary":"","budget_summary":"","travel_tips":[""],'
+        '"days":[{"day":1,"title":"","activities":[{"time":"09:00","activity":"","description":""}],'
+        '"accommodation_suggestion":"","hotel_slug":"","estimated_cost":""}]}'
     )
     system_instruction = (
         "You are the trip planner for Zen World Hospitality, a Mumbai travel company. Match the traveller's "
@@ -128,17 +162,10 @@ async def generate_custom_itinerary(
     )
 
     def call(model: str):
-        interaction = client.interactions.create(
-            model=model,
-            input=prompt,
-            system_instruction=system_instruction,
-            response_format={
-                "type": "text",
-                "mime_type": "application/json",
-                "schema": Itinerary.model_json_schema(),
-            },
-        )
-        itinerary = Itinerary.model_validate_json(interaction.output_text)
+        raw = _generate(model, prompt, system_instruction, as_json=True).strip()
+        if raw.startswith("```"):
+            raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+        itinerary = Itinerary.model_validate_json(raw)
         if not itinerary.days:
             raise ValueError("empty itinerary")
         return itinerary
@@ -162,15 +189,10 @@ async def generate_custom_itinerary(
     return data
 
 
-CHAT_SYSTEM = f"""You are the concierge for Zen World Hospitality (Mumbai, India).
-Contact: WhatsApp or call {CONTACT_PHONE_DISPLAY}; email {CONTACT_EMAIL}. Never give any other number or email,
-and never share a partner hotel's own phone or email: all bookings go through Zen.
-
-Services: corporate travel, MICE and events, domestic and international holidays, partner hotel stays
-with best rates via Zen, outstation cabs and coaches, and hotel management consulting.
-
-Be warm, concise (1-3 short paragraphs) and never invent prices. To book, point people to the
-"Enquire" buttons or WhatsApp."""
+CHAT_SYSTEM = f"""You work at Zen World Hospitality in Mumbai.
+You answer questions about partner hotels, domestic tours (Kerala, Goa, Gujarat, Mumbai, Uttar Pradesh, Maharashtra, the Chardham), outstation cabs and coaches, company travel, meetings and events, and how to use this website.
+Contact is only WhatsApp or call {CONTACT_PHONE_DISPLAY}, or email {CONTACT_EMAIL}. Never give any other number or email, and never share a partner hotel's own phone or email. Bookings go through Zen, on WhatsApp or the quote button.
+Write short replies, two or three sentences. Do not invent prices. Do not call yourself a concierge, an assistant, or an AI. You are someone at Zen answering the question."""
 
 CHAT_FALLBACK = (
     f"I can't answer right now. Please WhatsApp or call us on {CONTACT_PHONE_DISPLAY}, "
@@ -190,14 +212,12 @@ async def handle_chat_message(messages: List[dict], hotels: Optional[List[dict]]
     history = messages[-12:]
     prompt = "Conversation so far:\n"
     for msg in history[:-1]:
-        role = "Guest" if msg["role"] == "user" else "Concierge"
+        role = "Guest" if msg["role"] == "user" else "Zen"
         prompt += f"{role}: {msg['content'][:2000]}\n"
-    prompt += f"Guest: {history[-1]['content'][:2000] if history else 'Hello'}\nConcierge:"
+    prompt += f"Guest: {history[-1]['content'][:2000] if history else 'Hello'}\nZen:"
 
     def call(model: str):
-        text = client.interactions.create(
-            model=model, input=prompt, system_instruction=system_instruction
-        ).output_text
+        text = _generate(model, prompt, system_instruction)
         if not text or not text.strip():
             raise ValueError("empty reply")
         return text.strip()

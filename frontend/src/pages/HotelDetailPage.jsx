@@ -4,7 +4,6 @@ import { ArrowLeft, BedDouble, Check, MapPin, MessageCircle, Phone, Star } from 
 import Gallery from '../components/hotels/Gallery';
 import { RateBadge } from '../components/hotels/HotelCard';
 import QuoteDrawer from '../components/QuoteDrawer';
-import Carousel from '../components/ui/Carousel';
 import Reveal from '../components/motion/Reveal';
 import TextReveal from '../components/motion/TextReveal';
 import MagneticButton from '../components/motion/MagneticButton';
@@ -94,7 +93,7 @@ export default function HotelDetailPage() {
           {hotel.room_types?.length > 0 && (
             <div className="mt-16 border-t border-gold/10 pt-10">
               <h2 className="mb-6 font-display text-3xl text-pearl">Rooms</h2>
-              <Carousel label="Room types" itemClassName="w-[80%] sm:w-[48%]">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {hotel.room_types.map((r) => (
                   <div key={r.name} className="flex h-full flex-col rounded-[1.5rem] border border-gold/15 bg-ink-900/50 p-6">
                     <BedDouble className="h-6 w-6 text-gold" />
@@ -107,7 +106,7 @@ export default function HotelDetailPage() {
                     </button>
                   </div>
                 ))}
-              </Carousel>
+              </div>
             </div>
           )}
 

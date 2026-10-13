@@ -104,8 +104,8 @@ const PackagesSection = () => {
         <ScrollReveal>
           <div className="text-center mb-10 md:mb-12">
             <h2 className="text-emerald-500 font-medium tracking-widest uppercase text-sm mb-2">Discover</h2>
-            <h3 className="text-3xl md:text-5xl font-playfair font-bold text-white mb-4 md:mb-6">Our Premium Packages</h3>
-            <p className="text-gray-400 max-w-xl mx-auto text-sm md:text-base">Handpicked experiences designed to create unforgettable memories.</p>
+            <h3 className="text-3xl md:text-5xl font-playfair font-bold text-white mb-4 md:mb-6">Packages</h3>
+            <p className="text-gray-400 max-w-xl mx-auto text-sm md:text-base">Fixed routes with hotels and a car. Ask if you want the days changed.</p>
           </div>
         </ScrollReveal>
 

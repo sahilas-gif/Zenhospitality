@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Zen World Hospitality: Project Second Draft</title>
+<style>
+  @page { size: A4; margin: 1in;
+    @bottom-center { content: counter(page); font: 12pt "Times New Roman", Times, serif; }
+  }
+  @page :first { @bottom-center { content: none; } }
+  html { font-family: "Times New Roman", Times, serif; }
+  body { font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.5; color: #111; margin: 0; }
+  h1 { font-family: "Times New Roman", Times, serif; font-size: 14pt; font-weight: bold; margin: 18pt 0 8pt; page-break-before: always; }
+  h1.first { page-break-before: auto; }
+  h2 { font-family: "Times New Roman", Times, serif; font-size: 14pt; font-weight: bold; margin: 14pt 0 6pt; }
+  p, li, td, th { font-size: 12pt; line-height: 1.5; }
+  p { margin: 0 0 8pt; text-align: justify; }
+  a { color: #0b3a66; }
+  table { border-collapse: collapse; width: 100%; margin: 8pt 0 12pt; }
+  th, td { border: 1px solid #333; padding: 4pt 6pt; vertical-align: top; text-align: left; }
+  th { font-weight: bold; }
+  ul, ol { margin: 0 0 8pt; padding-left: 22pt; }
+  .cover { page-break-after: always; text-align: center; padding-top: 36pt; }
+  .cover h1 { page-break-before: auto; font-size: 14pt; border: none; }
+  .inst { font-size: 12pt; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 28pt; }
+  .cover table { width: 90%; margin: 28pt auto; }
+  .cover td { border: none; text-align: left; }
+  .toc { list-style: none; padding-left: 0; }
+  .toc li { margin: 0 0 4pt; }
+  .toc a { text-decoration: none; color: #111; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <p class="inst">K. J. Somaiya Institute of Management · MCA Industry Project</p>
+  <h1>Hospitality Showcase and Direct Lead Capture System</h1>
+  <p>for Zen World Hospitality (zenhospitality.in)</p>
+  <p><strong>Project Report · Second Draft</strong></p>
+  <table>
+    <tr><td>Document ID</td><td>SRS-KJSIM-MCA-2026-ZH01 (Draft 2)</td></tr>
+    <tr><td>Student</td><td>Sahil Singh (Roll No. 53), MCA</td></tr>
+    <tr><td>Faculty Guide</td><td>Prof. Naimesh Tungare</td></tr>
+    <tr><td>Client</td><td>Mr. Raj Gupta, Zen World Hospitality, Mumbai</td></tr>
+    <tr><td>Institution</td><td>K. J. Somaiya Institute of Management (KJSIM), Mumbai</td></tr>
+    <tr><td>Submission</td><td>Second draft, 14 October 2026</td></tr>
+    <tr><td>Project status</td><td>Live at https://zenhospitality.in</td></tr>
+  </table>
+  <p>Milestones: Proposal 16 Sep · First draft 25 Sep · Second draft 16 Oct · Final documents 22 Oct · Demo and viva 21 Oct 2026 (the first draft had recorded 27 Oct).</p>
+</div>
+
+<h1 class="first" id="abstract">Abstract</h1>
+<p>Zen World Hospitality is a Mumbai travel and accommodation business. Enquiries used to arrive by phone, personal WhatsApp chats, and online travel agencies that charge 15% to 25% per booking. This project is the company website: a showcase for hotels, domestic tours, company travel and cars, with every enquiry sent to the sales team on WhatsApp and stored for the admin. The site runs on shared cPanel hosting.</p>
+<p>This draft describes the site on 14 October 2026. The public pages and the API are on https://zenhospitality.in. Since the first draft I have added Search Console, a sitemap, robots.txt, hotel pages, a contact form, a trip planner and a chat button. Mr. Raj Kumar says the site has brought in more than 10 calls and about 5 bookings, and about Rs 20,000 in profit. That is his figure. I did not count it from the enquiry table. International tours and flight ticketing still say Coming Soon.</p>
+
+<h2 id="contents">Contents</h2>
+<ul class="toc">
+  <li><a href="#s1">1. Introduction</a></li>
+  <li><a href="#s2">2. Project status at second draft</a></li>
+  <li><a href="#s3">3. Requirements and implementation status</a></li>
+  <li><a href="#s4">4. System design (as built)</a></li>
+  <li><a href="#s5">5. Implementation details</a></li>
+  <li><a href="#s6">6. Deviations from the proposal</a></li>
+  <li><a href="#s7">7. Results reported by the client</a></li>
+  <li><a href="#s8">8. Known limits</a></li>
+  <li><a href="#s9">9. Remaining milestones</a></li>
+  <li><a href="#s10">10. Summary</a></li>
+  <li><a href="#refs">References</a></li>
+  <li><a href="#appa">Appendix A. API endpoints added or changed since the first draft</a></li>
+  <li><a href="#appb">Appendix B. Feature to website link</a></li>
+</ul>
+
+<h1 id="s1">1. Introduction</h1>
+<h2>1.1 Client and business context</h2>
+<p>Zen World Hospitality works in two segments. The first is company travel: stays, meetings and events, invoiced through Zen. The second is leisure: partner hotels and domestic tours, including Kerala, Goa, Gujarat, Mumbai, Uttar Pradesh, Maharashtra and the Chardham. Bookings are confirmed by the Zen team. The only public booking number is +91 88280 15060. The public email is connect.zenworld@gmail.com.</p>
+<h2>1.2 Problem statement</h2>
+<p>The business had no single catalogue. Online travel agencies take a commission on each reservation. Leads from social media had nowhere verified to land. Customer details sat in personal chats. An earlier WordPress theme on the same budget host was slow and did not match the dark-and-gold brand, which is why the project is a custom build.</p>
+<h2>1.3 Objectives</h2>
+<ol>
+  <li>Build a responsive showcase for hotels, tours, company travel and transport.</li>
+  <li>Send enquiries to WhatsApp and store them for the admin.</li>
+  <li>Let the client add and edit hotels and packages without a developer.</li>
+  <li>Keep yearly hosting and domain costs under Rs 3,000.</li>
+</ol>
+<h2>1.4 Scope</h2>
+<p>In scope: the public site, lead capture, the admin portal, technical SEO, and the AI planner and chat. Out of scope, as in the proposal: a flight booking engine, online payment, live room inventory, visa processing and an SMS gateway. Payment stays offline.</p>
+
+<h1 id="s2">2. Project status at second draft</h1>
+<p>The first draft (25 September 2026) recorded the build as mostly local, with SEO still ahead and two catalogue pages as placeholders. Since then the site has been the public face of the business.</p>
+<table>
+  <tr><th>Phase</th><th>Status on 14 Oct 2026</th><th>What changed</th></tr>
+  <tr><td>1. Requirements</td><td>Complete</td><td>Unchanged from the proposal of 16 Sep 2026.</td></tr>
+  <tr><td>2. Information architecture</td><td>Complete</td><td>Routes now include /hotels, /hotels/:slug and /plan-trip. The visual system is dark navy and gold, with Cormorant Garamond and Plus Jakarta Sans.</td></tr>
+  <tr><td>3. Core implementation</td><td>Live</td><td>Hotels can be added and edited in admin. Contact has a Get in Touch section and a Formspree form. The homepage hero links to the AI trip planner.</td></tr>
+  <tr><td>4. SEO</td><td>In place</td><td>sitemap.xml, robots.txt, per-page titles, hotel HTML for the two partner hotels, and a verified Search Console domain property.</td></tr>
+  <tr><td>5. Testing</td><td>Started</td><td>AI service tests cover the chat prompt and the itinerary JSON path. Live checks were done in the browser and with HTTP requests.</td></tr>
+  <tr><td>6. Deployment</td><td>Live</td><td>https://zenhospitality.in serves the React build from public_html. The API runs under /api through Passenger.</td></tr>
+</table>
+
+<h1 id="s3">3. Requirements and implementation status</h1>
+<table>
+  <tr><th>ID</th><th>Requirement</th><th>Status</th><th>Where</th></tr>
+  <tr><td>REQ-01</td><td>Brand UI</td><td>Done</td><td>https://zenhospitality.in/</td></tr>
+  <tr><td>REQ-02</td><td>Company travel</td><td>Done</td><td>/corporate and /services/corporate</td></tr>
+  <tr><td>REQ-03</td><td>Catalogue</td><td>Partial</td><td>Domestic tours and two partner hotels are live. International tours and flight ticketing still say Coming Soon.</td></tr>
+  <tr><td>REQ-04</td><td>Direct lead capture</td><td>Done</td><td>WhatsApp and tel: links use +91 88280 15060 only.</td></tr>
+  <tr><td>REQ-05</td><td>Stored enquiry</td><td>Done</td><td>The quote drawer saves an enquiry and opens WhatsApp. If the save fails, WhatsApp still opens and the screen does not claim the save succeeded.</td></tr>
+  <tr><td>REQ-06</td><td>Admin</td><td>Done</td><td>/admin/login. Hotels can be added and edited. Packages remain editable.</td></tr>
+  <tr><td>REQ-07</td><td>Technical SEO</td><td>Done</td><td>/sitemap.xml, /robots.txt, titles, and hotel pages.</td></tr>
+</table>
+<h2>3.1 Added since the proposal</h2>
+<ul>
+  <li>AI trip planner at /plan-trip, with a PDF when the visitor sends the quote.</li>
+  <li>Chat button on every public page. It answers from partner hotels, tours, cabs and company travel, and it does not invent prices or hotel phone numbers.</li>
+  <li>Partner hotel pages: The Purple Mango, Karla, Lonavala, and Nestor Hotel, Marol, Andheri East.</li>
+  <li>Get in Touch on the homepage and the contact page, with Instagram and Facebook QR cards. The contact page also has the form and the map.</li>
+</ul>
+
+<h1 id="s4">4. System design (as built)</h1>
+<h2>4.1 Architecture</h2>
+<p>The browser loads the React build from public_html. Paths under /api are handled by FastAPI through Phusion Passenger and a2wsgi. WhatsApp and telephone links leave the server entirely. Gemini is called with HTTPS from the API when a visitor uses the planner or the chat. The live database is a SQLite file on the server, not PostgreSQL. The first draft’s architecture figure named PostgreSQL because that was the intended production engine. The shared host is running SQLite.</p>
+<h2>4.2 Technology stack</h2>
+<p>React 19 and Vite 8 on the front. Tailwind CSS v4. FastAPI and SQLAlchemy async on the back. Passenger and a2wsgi on the host. Gemini is called with generateContent. The chat and the planner try gemini-flash-latest, then gemini-3.5-flash, then gemini-2.5-flash, and they use the first model that returns.</p>
+<h2>4.3 Data the admin can change</h2>
+<p>Hotels (name, city, locality, summary, rooms, images, optional price, publish flag), tour packages, enquiries, and page text. Hotel pages do not publish a property’s own phone or email. Prices on hotel cards can be omitted. The public line is “Get best rate”.</p>
+<h2>4.4 Front-end routes added since the first draft</h2>
+<table>
+  <tr><th>Route</th><th>Page</th></tr>
+  <tr><td>/hotels and /hotels/:slug</td><td>Partner hotels and a hotel page</td></tr>
+  <tr><td>/plan-trip</td><td>AI trip planner</td></tr>
+  <tr><td>/contact</td><td>Get in Touch, form, and map</td></tr>
+</table>
+
+<h1 id="s5">5. Implementation details</h1>
+<h2>5.1 Lead capture</h2>
+<p>A visitor opens a hotel, a tour, or the planner and asks for a quote. The drawer collects the name and phone, posts the enquiry, and opens WhatsApp with the same details. The contact page form posts to Formspree and is delivered to connect.zenworld@gmail.com.</p>
+<h2>5.2 AI</h2>
+<p>POST /api/ai/chat answers short questions. POST /api/ai/generate-itinerary returns a day-by-day plan and stores it. If Gemini is busy, the API says so and the page offers WhatsApp. After the visitor sends the quote, the browser downloads a PDF of the plan.</p>
+<h2>5.3 SEO</h2>
+<p>https://zenhospitality.in/sitemap.xml lists the public pages and the two hotel URLs. https://zenhospitality.in/robots.txt points at that sitemap. The domain property in Google Search Console is verified with a DNS TXT record. Hotel pages are server-rendered HTML so a crawler sees the hotel name without running the React app.</p>
+
+<h1 id="s6">6. Deviations from the proposal</h1>
+<table>
+  <tr><th>Area</th><th>Proposal</th><th>As built</th></tr>
+  <tr><td>Database</td><td>PostgreSQL</td><td>SQLite on the live host</td></tr>
+  <tr><td>Keys</td><td>UUID</td><td>Integer keys. Public URLs use slugs.</td></tr>
+  <tr><td>Phone</td><td>An older number in the proposal</td><td>+91 88280 15060 only</td></tr>
+  <tr><td>Extra modules</td><td>None</td><td>AI planner, chat, hotel editor, Formspree contact form</td></tr>
+  <tr><td>Routes</td><td>/corporate-desk, /tours/domestic</td><td>/corporate, /domestic-tours, /hotels, /plan-trip</td></tr>
+</table>
+
+<h1 id="s7">7. Results reported by the client</h1>
+<p>Mr. Raj Gupta reports that, since the website went live, it has attracted more than 10 calls and about 5 bookings, generating about Rs 20,000 in profit. This is a client report for the second draft. It is not an export from the enquiry table, and the report does not treat it as one. The mechanism that matches the report is the one the site was built for: a visitor reaches a planner on WhatsApp or by phone from the page they were reading.</p>
+
+<h1 id="s8">8. Known limits</h1>
+<ul>
+  <li>International tours and flight ticketing still say Coming Soon. They are enquiry pages, not catalogues.</li>
+  <li>Gemini sometimes returns a high-demand error. The planner and the chat try the next model, and they show the WhatsApp line if every model fails.</li>
+  <li>The Gemini key is an operating cost outside the Rs 3,000 hosting plan. Rate limits stay on both AI routes.</li>
+  <li>Shared hosting has a small memory cap. There is no background worker.</li>
+</ul>
+
+<h1 id="s9">9. Remaining milestones</h1>
+<table>
+  <tr><th>Milestone</th><th>Date</th><th>Work</th></tr>
+  <tr><td>Second draft</td><td>16 Oct 2026</td><td>This document.</td></tr>
+  <tr><td>Demo and viva</td><td>21 Oct 2026</td><td>Live demo on zenhospitality.in. The deck is docs/second_draft/demo.pptx.</td></tr>
+  <tr><td>Final documents</td><td>22 Oct 2026</td><td>Guide’s comments, then the Drive upload once the link is shared.</td></tr>
+</table>
+
+<h1 id="s10">10. Summary</h1>
+<p>Someone can look at the partner hotels and the domestic tours, get a day-by-day plan, ask a question in the chat, and message Zen on WhatsApp at +91 88280 15060. Mr. Raj Kumar can add a hotel and read enquiries in the admin. He reports more than 10 calls, about 5 bookings, and about Rs 20,000 in profit from the site. International tours and flight ticketing are still Coming Soon.</p>
+
+<h1 id="refs">References</h1>
+<ol>
+  <li>Sahil Singh, Project Proposal and SRS, SRS-KJSIM-MCA-2026-ZH01, KJSIM, 16 September 2026.</li>
+  <li>Sahil Singh, Project Report, First Draft, 25 September 2026.</li>
+  <li>React, https://react.dev/</li>
+  <li>Vite, https://vite.dev/guide/</li>
+  <li>FastAPI, https://fastapi.tiangolo.com/</li>
+  <li>Google Gemini API, https://ai.google.dev/gemini-api/docs</li>
+  <li>Schema.org LodgingBusiness, https://schema.org/LodgingBusiness</li>
+  <li>WhatsApp click to chat, https://faq.whatsapp.com/5913398998672934</li>
+</ol>
+
+<h1 id="appa">Appendix A. API endpoints added or changed since the first draft</h1>
+<table>
+  <tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
+  <tr><td>GET</td><td>/api/hotels and /api/hotels/{slug}</td><td>Public hotel list and one hotel</td></tr>
+  <tr><td>POST, PUT</td><td>/api/admin/hotels</td><td>Add and edit a hotel</td></tr>
+  <tr><td>POST</td><td>/api/ai/chat</td><td>Chat</td></tr>
+  <tr><td>POST</td><td>/api/ai/generate-itinerary</td><td>Day-by-day plan</td></tr>
+  <tr><td>GET</td><td>/sitemap.xml and /robots.txt</td><td>SEO files</td></tr>
+  <tr><td>GET</td><td>/api/health</td><td>Health check</td></tr>
+</table>
+
+<h1 id="appb">Appendix B. Feature to website link</h1>
+<table>
+  <tr><th>Feature</th><th>Link</th></tr>
+  <tr><td>Home, with the AI trip planner button</td><td>https://zenhospitality.in/</td></tr>
+  <tr><td>Partner hotels</td><td>https://zenhospitality.in/hotels</td></tr>
+  <tr><td>The Purple Mango, Karla, Lonavala</td><td>https://zenhospitality.in/hotels/the-purple-mango</td></tr>
+  <tr><td>Nestor Hotel, Marol, Andheri East</td><td>https://zenhospitality.in/hotels/nestor-hotel-andheri</td></tr>
+  <tr><td>AI trip planner</td><td>https://zenhospitality.in/plan-trip</td></tr>
+  <tr><td>Domestic tours</td><td>https://zenhospitality.in/domestic-tours</td></tr>
+  <tr><td>Kerala</td><td>https://zenhospitality.in/domestic-tours/kerala</td></tr>
+  <tr><td>Contact and the form</td><td>https://zenhospitality.in/contact</td></tr>
+  <tr><td>Sitemap</td><td>https://zenhospitality.in/sitemap.xml</td></tr>
+  <tr><td>Admin</td><td>https://zenhospitality.in/admin/login</td></tr>
+</table>
+<p>Screenshots of these pages were taken on the live site while this draft was written. The admin login is listed as a link only.</p>
+
+</body>
+</html>

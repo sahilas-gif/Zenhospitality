@@ -37,7 +37,7 @@ const field = 'w-full rounded-2xl border border-gold/15 bg-ink-950/60 px-4 py-3 
  *   extra?: [[label, value]]  // added to the WhatsApp message and the saved note
  * }
  */
-export default function QuoteDrawer({ open, onClose, context = {} }) {
+export default function QuoteDrawer({ open, onClose, context = {}, onQuoted }) {
   const reduce = useReducedMotion();
   const titleId = useId();
   const panel = useRef(null);
@@ -151,6 +151,7 @@ export default function QuoteDrawer({ open, onClose, context = {} }) {
     wa.go(text);
     setReference(ref);
     setStatus(ref ? 'saved' : 'unsaved');
+    if (onQuoted) onQuoted();
   };
 
   return (

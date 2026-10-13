@@ -40,11 +40,11 @@ def client(outputs):
 
 @pytest.mark.asyncio
 async def test_itinerary_uses_structured_output_and_filters_hotels():
-    c = client([json.dumps(VALID)])
-    with mock.patch.object(ai_service, "_get_client", return_value=c):
+    with mock.patch.object(ai_service, "_get_client", return_value=object()), mock.patch.object(
+        ai_service, "_generate", return_value=json.dumps(VALID)
+    ) as gen:
         data = await ai_service.generate_custom_itinerary("Lonavala", 2, "mid", "", hotels=HOTELS)
-    fmt = c.interactions.kwargs[0]["response_format"]
-    assert fmt["mime_type"] == "application/json" and "properties" in fmt["schema"]
+    assert gen.call_args.kwargs["as_json"] is True
     assert len(data["days"]) == 2
     assert data["days"][0]["hotel"]["name"] == "The Purple Mango"
     assert data["days"][1]["hotel_slug"] is None
@@ -52,16 +52,18 @@ async def test_itinerary_uses_structured_output_and_filters_hotels():
 
 @pytest.mark.asyncio
 async def test_itinerary_falls_back_then_raises():
-    c = client([RuntimeError("429"), "not json", RuntimeError("down")])
-    with mock.patch.object(ai_service, "_get_client", return_value=c):
+    with mock.patch.object(ai_service, "_get_client", return_value=object()), mock.patch.object(
+        ai_service, "_generate", side_effect=[RuntimeError("429"), ValueError("not json"), RuntimeError("down")]
+    ):
         with pytest.raises(ai_service.AiUnavailable):
             await ai_service.generate_custom_itinerary("Goa", 2, "mid", "")
 
 
 @pytest.mark.asyncio
 async def test_chat_falls_back_to_next_model():
-    c = client([RuntimeError("429"), "Hello from Zen"])
-    with mock.patch.object(ai_service, "_get_client", return_value=c):
+    with mock.patch.object(ai_service, "_get_client", return_value=object()), mock.patch.object(
+        ai_service, "_generate", side_effect=[RuntimeError("429"), "Hello from Zen"]
+    ):
         assert await ai_service.handle_chat_message([{"role": "user", "content": "hi"}]) == "Hello from Zen"
 
 

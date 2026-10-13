@@ -5,15 +5,15 @@ const AboutSection = () => (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div className="text-center mb-12 md:mb-16">
         <h2 className="text-emerald-500 font-medium tracking-widest uppercase text-sm mb-2">About Us</h2>
-        <h3 className="text-3xl md:text-5xl font-playfair font-bold text-white mb-6">Redefining Hospitality</h3>
+        <h3 className="text-3xl md:text-5xl font-playfair font-bold text-white mb-6">What we do</h3>
         <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-[#d4af37] mx-auto rounded-full" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         {[
-          { icon: Target, color: 'emerald', title: 'Our Vision', desc: 'To be the globally preferred partner in hospitality management, corporate travel, and bespoke leisure experiences, known for innovation, luxury, and unmatched service quality.' },
-          { icon: Compass, color: 'gold', title: 'Our Mission', desc: 'We strive to empower hotels to maximize revenue while offering travelers and businesses seamless, premium, and unforgettable journeys across the globe.' },
-          { icon: Star, color: 'blue', title: 'Our Core Values', desc: null, list: ['Excellence in Service', 'Integrity & Trust', 'Innovation in Hospitality', 'Customer-Centric Approach'] },
+          { icon: Target, color: 'emerald', title: 'Our Vision', desc: 'A Mumbai desk people call for hotel stays, company travel and holidays, because the reply is clear and the booking holds.' },
+          { icon: Compass, color: 'gold', title: 'Our Mission', desc: 'Help hotels fill rooms, and get travellers and companies a stay, a car or a tour without chasing five vendors.' },
+          { icon: Star, color: 'blue', title: 'Our Core Values', desc: null, list: ['Do the work properly', 'Say what the rate includes', 'Fix it if we booked it wrong', 'Answer the phone'] },
         ].map((item, idx) => (
           <div key={idx} className={`glass-card p-6 md:p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300 ${item.color === 'gold' ? 'border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.1)]' : ''}`}>
             <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${item.color === 'emerald' ? 'bg-emerald-500/20' : item.color === 'gold' ? 'bg-[#d4af37]/20' : 'bg-blue-500/20'}`}>

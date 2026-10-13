@@ -33,7 +33,7 @@ const tours = [
     route: 'Ahmedabad – Kevadia – Rann – Dwarka – Somnath – Gir – Diu – Saputara',
     duration: '10 Nights / 11 Days',
     destination: 'Gujarat',
-    description: 'An 11-day luxury pilgrimage curated for seekers, families & photographers. Includes coastal Diu & hill Saputara.',
+    description: 'Eleven days: Ahmedabad, Kevadia, the Rann, Dwarka, Somnath, Gir, Diu and Saputara.',
     highlights: ['Statue of Unity', 'White Rann of Kutch', 'Dwarka & Bet Dwarka', 'Somnath Jyotirlinga', 'Sasan Gir', 'Diu Forts', 'Saputara Hill Station'],
     itinerary: [
       { day: 1, title: 'Ahmedabad Arrival', desc: 'Sabarmati Ashram, Adalaj Stepwell, Sabarmati Riverfront.' },

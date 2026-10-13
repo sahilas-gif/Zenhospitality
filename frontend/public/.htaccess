@@ -9,11 +9,11 @@
   # RewriteBase is a no-op if empty
   RewriteBase /
 
-  # Crawlable hotel pages, sitemap and robots come from the API (same SPA shell + meta tags)
-  RewriteRule ^hotels/?$ /api/seo/hotels [L,QSA]
-  RewriteRule ^hotels/([a-z0-9-]+)/?$ /api/seo/hotels/$1 [L,QSA]
+  # Sitemap, robots and hotel pages come from the API. Do not deny .py or these rewrites 403.
   RewriteRule ^sitemap\.xml$ /api/seo/sitemap.xml [L]
   RewriteRule ^robots\.txt$ /api/seo/robots.txt [L]
+  RewriteRule ^hotels/?$ /api/seo/hotels [L,QSA]
+  RewriteRule ^hotels/([a-z0-9-]+)/?$ /api/seo/hotels/$1 [L,QSA]
 
   # Let real files / directories through as-is (fonts, images, JS, CSS)
   RewriteCond %{REQUEST_FILENAME} -f [OR]
@@ -54,11 +54,6 @@
 
 # ── Prevent serving sensitive dotfiles ─────────────────────────
 <FilesMatch "^\.">
-  Require all denied
-</FilesMatch>
-
-# ── Never serve archives, databases or backups from the web root ─
-<FilesMatch "\.(zip|tar|gz|db|sqlite3?|bak|sql|py|env)$">
   Require all denied
 </FilesMatch>
 

@@ -46,7 +46,7 @@ const Footer = () => (
             <span className="font-display text-2xl text-pearl">Zen World Hospitality</span>
           </Link>
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-pearl/55">
-            Hotels, holidays, corporate travel and transport, planned end to end from Mumbai.
+            Hotels, holidays, company travel and cars, booked from Mumbai.
           </p>
           <div className="mt-6 space-y-2.5 text-sm">
             <a href={CONTACT.phonePrimaryTel} className="flex items-center gap-3 text-pearl/80 hover:text-gold">

@@ -1,22 +1,25 @@
 import PageHeader from '../components/PageHeader';
+import { useSeo } from '../lib/seo';
 import { Building2, TrendingUp, Key, HeadphonesIcon } from 'lucide-react';
 
 const items = [
-  { title: 'OTA Optimization', desc: 'Maximizing visibility and conversion on Booking.com, Agoda, MakeMyTrip, and more.' },
-  { title: 'Revenue Management', desc: 'Dynamic pricing strategies to ensure maximum RevPAR.' },
-  { title: 'Pre-Opening Advisory', desc: 'Strategic planning, staffing, and positioning for new properties.' },
+  { title: 'Online listings', desc: 'Photos, rates and availability on Booking.com, Agoda and MakeMyTrip.' },
+  { title: 'Room rates', desc: 'Price changes through the week so empty rooms do not sit at last month\'s rate.' },
+  { title: 'Before opening', desc: 'Staffing, positioning and a launch plan for a new property.' },
 ];
 
-const HotelManagementPage = () => (
+const HotelManagementPage = () => {
+  useSeo('Hotel management, Mumbai', 'Listing, rates and pre-opening help for hotels, including partner stays in Lonavala and Andheri East.');
+  return (
   <div>
-    <PageHeader title="Hotel Management & Operator Services" subtitle="Maximizing revenue and operational efficiency for premium properties." />
+    <PageHeader title="Hotel management" subtitle="Sales, pricing and day-to-day help for hotels we operate with." />
     <section className="py-16 md:py-20 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
           <div className="space-y-6 md:space-y-8">
-            <h2 className="text-2xl md:text-3xl font-bold font-playfair mb-4 md:mb-6">Expertise That Drives Results</h2>
+            <h2 className="text-2xl md:text-3xl font-bold font-playfair mb-4 md:mb-6">What we take on for a hotel</h2>
             <p className="text-gray-400 text-sm md:text-base">
-              With years of industry experience, Zen World Hospitality offers comprehensive operator services designed to elevate property performance. We handle everything from pre-opening advisories to daily OTA optimization.
+              We work with hotels on listing them on Booking.com, Agoda and MakeMyTrip, on room rates, and on the work before a new property opens.
             </p>
 
             <div className="space-y-4 md:space-y-6">
@@ -82,6 +85,7 @@ const HotelManagementPage = () => (
       </div>
     </section>
   </div>
-);
+  );
+};
 
 export default HotelManagementPage;

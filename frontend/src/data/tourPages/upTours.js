@@ -7,7 +7,7 @@ const tours = [
     route: 'Varanasi - Ayodhya - Prayagraj',
     duration: '5 Nights / 6 Days',
     destination: 'Uttar Pradesh',
-    description: 'Handcrafted spiritual journey across Varanasi, Ayodhya, and Prayagraj. Private chauffeur, verified stays near temples & ghats.',
+    description: 'Varanasi, Prayagraj and Ayodhya, with a private car and stays near the ghats and temples.',
     highlights: ['Ganga Aarti', 'Ram Mandir', 'Triveni Sangam', 'Sarnath'],
     itinerary: [
       { day: 1, title: 'Arrival Varanasi', desc: 'Private transfer to hotel near Assi Ghat. Evening boat ride for the divine Ganga Aarti at Dashashwamedh Ghat.' },
@@ -52,7 +52,7 @@ const tours = [
     route: 'Mathura - Vrindavan - Barsana',
     duration: '3 Nights / 4 Days',
     destination: 'Uttar Pradesh',
-    description: 'Immerse in the festive soul of Lord Krishna\'s birthplace with our curated Braj Bhumi Darshan.',
+    description: 'Mathura, Vrindavan and Barsana, including Banke Bihari, Prem Mandir and Govardhan.',
     highlights: ['Banke Bihari', 'Prem Mandir', 'Govardhan', 'Yamuna Aarti'],
     itinerary: [
       { day: 1, title: 'Mathura Arrival', desc: 'Check-in. Shri Krishna Janmasthan Temple and evening Yamuna Aarti.' },

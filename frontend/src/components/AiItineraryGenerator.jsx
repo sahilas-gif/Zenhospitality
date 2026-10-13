@@ -215,6 +215,7 @@ export default function AiItineraryGenerator() {
         <QuoteDrawer
           open={quoteOpen}
           onClose={() => setQuoteOpen(false)}
+          onQuoted={() => downloadItineraryPdf(plan)}
           context={{
             type: 'itinerary',
             itineraryId: plan.id,

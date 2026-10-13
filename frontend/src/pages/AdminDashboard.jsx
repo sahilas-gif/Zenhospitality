@@ -34,6 +34,10 @@ const AdminDashboard = () => {
   const [highlightInput, setHighlightInput] = useState('');
 
   const [hotels, setHotels] = useState([]);
+  const [hotelModal, setHotelModal] = useState(false);
+  const [editingHotel, setEditingHotel] = useState(null);
+  const [hotelForm, setHotelForm] = useState(null);
+  const [savingHotel, setSavingHotel] = useState(false);
   const [enquiryType, setEnquiryType] = useState('');
   const [pageSlug, setPageSlug] = useState('home');
   const [pageContent, setPageContent] = useState({});
@@ -228,6 +232,44 @@ const AdminDashboard = () => {
     }
   };
 
+  const saveHotel = async (e) => {
+    e.preventDefault();
+    setSavingHotel(true);
+    setError('');
+    const split = (text) => text.split(/[\n,]/).map((s) => s.trim()).filter(Boolean);
+    const payload = {
+      name: hotelForm.name.trim(),
+      city: hotelForm.city.trim(),
+      locality: hotelForm.locality.trim() || null,
+      state: hotelForm.state.trim() || null,
+      summary: hotelForm.summary.trim() || null,
+      description: hotelForm.description.trim() || null,
+      star_rating: hotelForm.star_rating === '' ? null : Number(hotelForm.star_rating),
+      price_from: hotelForm.price_from === '' ? null : Number(hotelForm.price_from),
+      amenities: split(hotelForm.amenities),
+      images: split(hotelForm.imageUrls).map((url) => ({ url, alt: hotelForm.name.trim() })),
+      room_types: split(hotelForm.rooms).map((name) => ({ name })),
+      is_published: hotelForm.is_published,
+      is_featured: hotelForm.is_featured,
+    };
+    try {
+      if (editingHotel) {
+        await api.put(`/admin/hotels/${editingHotel.id}`, payload);
+        setSuccess('Hotel updated.');
+      } else {
+        await api.post('/admin/hotels', payload);
+        setSuccess('Hotel added.');
+      }
+      setHotelModal(false);
+      fetchData();
+    } catch (err) {
+      const detail = err.response?.data?.detail;
+      setError(typeof detail === 'string' ? detail : 'Could not save the hotel. Check the name, city, and image links.');
+    } finally {
+      setSavingHotel(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#060d17] pt-8 pb-12 font-sans text-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -310,6 +352,24 @@ const AdminDashboard = () => {
               Hotels ({hotels.length})
             </button>
           </div>
+
+          {activeTab === 'hotels' && (
+            <button
+              type="button"
+              onClick={() => {
+                setEditingHotel(null);
+                setHotelForm({
+                  name: '', city: '', locality: '', state: '', summary: '', description: '',
+                  star_rating: '', price_from: '', amenities: '', imageUrls: '', rooms: '',
+                  is_published: false, is_featured: false,
+                });
+                setHotelModal(true);
+              }}
+              className="flex items-center justify-center px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-ink-950 font-semibold rounded-xl text-sm"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add hotel
+            </button>
+          )}
 
           {activeTab === 'packages' && (
             <button
@@ -466,6 +526,32 @@ const AdminDashboard = () => {
                       <p className="font-semibold text-white">{h.name}</p>
                       <p className="text-xs text-gray-400">{h.city} · {h.is_published ? 'published' : 'draft'}</p>
                     </div>
+                    <div className="flex gap-2">
+                    <button
+                      type="button"
+                      className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-200"
+                      onClick={() => {
+                        setEditingHotel(h);
+                        setHotelForm({
+                          name: h.name || '',
+                          city: h.city || '',
+                          locality: h.locality || '',
+                          state: h.state || '',
+                          summary: h.summary || '',
+                          description: h.description || '',
+                          star_rating: h.star_rating ?? '',
+                          price_from: h.price_from ?? '',
+                          amenities: (h.amenities || []).join('\n'),
+                          imageUrls: (h.images || []).map((img) => (typeof img === 'string' ? img : img.url)).filter(Boolean).join('\n'),
+                          rooms: (h.room_types || []).map((r) => r.name).filter(Boolean).join('\n'),
+                          is_published: Boolean(h.is_published),
+                          is_featured: Boolean(h.is_featured),
+                        });
+                        setHotelModal(true);
+                      }}
+                    >
+                      Edit
+                    </button>
                     <button
                       type="button"
                       className="rounded-lg border border-gray-700 px-3 py-1.5 text-xs text-gray-200"
@@ -476,9 +562,10 @@ const AdminDashboard = () => {
                     >
                       {h.is_published ? 'Unpublish' : 'Publish'}
                     </button>
+                    </div>
                   </div>
                 ))}
-                {hotels.length === 0 && <p className="text-gray-500">No hotels yet. Run seed_hotels.py or add one through the API.</p>}
+                {hotels.length === 0 && <p className="text-gray-500">No hotels yet. Use Add hotel.</p>}
               </div>
             )}
 
@@ -635,6 +722,71 @@ const AdminDashboard = () => {
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {hotelModal && hotelForm && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 pt-24">
+          <form onSubmit={saveHotel} className="w-full max-w-2xl rounded-2xl border border-gray-800 bg-[#0a192f] p-6">
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-white">{editingHotel ? 'Edit hotel' : 'Add hotel'}</h2>
+              <button type="button" onClick={() => setHotelModal(false)} className="text-gray-400"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                ['name', 'Name', true],
+                ['city', 'City', true],
+                ['locality', 'Area', false],
+                ['state', 'State', false],
+                ['star_rating', 'Stars (1-7)', false],
+                ['price_from', 'Price from, optional', false],
+              ].map(([key, label, required]) => (
+                <label key={key} className="block text-xs text-gray-400">
+                  {label}
+                  <input
+                    required={required}
+                    value={hotelForm[key]}
+                    onChange={(e) => setHotelForm({ ...hotelForm, [key]: e.target.value })}
+                    className="mt-1 w-full rounded-xl border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white"
+                  />
+                </label>
+              ))}
+              <label className="block text-xs text-gray-400 sm:col-span-2">
+                Short summary
+                <input value={hotelForm.summary} onChange={(e) => setHotelForm({ ...hotelForm, summary: e.target.value })} className="mt-1 w-full rounded-xl border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white" />
+              </label>
+              <label className="block text-xs text-gray-400 sm:col-span-2">
+                Description
+                <textarea value={hotelForm.description} onChange={(e) => setHotelForm({ ...hotelForm, description: e.target.value })} rows={4} className="mt-1 w-full rounded-xl border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white" />
+              </label>
+              <label className="block text-xs text-gray-400">
+                Amenities, one per line
+                <textarea value={hotelForm.amenities} onChange={(e) => setHotelForm({ ...hotelForm, amenities: e.target.value })} rows={4} className="mt-1 w-full rounded-xl border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white" />
+              </label>
+              <label className="block text-xs text-gray-400">
+                Room names, one per line
+                <textarea value={hotelForm.rooms} onChange={(e) => setHotelForm({ ...hotelForm, rooms: e.target.value })} rows={4} className="mt-1 w-full rounded-xl border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white" />
+              </label>
+              <label className="block text-xs text-gray-400 sm:col-span-2">
+                Image links, one per line. Use a link that starts with https:// or /images/ or /api/uploads/
+                <textarea value={hotelForm.imageUrls} onChange={(e) => setHotelForm({ ...hotelForm, imageUrls: e.target.value })} rows={3} className="mt-1 w-full rounded-xl border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white" />
+              </label>
+              <label className="flex items-center gap-2 text-sm text-gray-300">
+                <input type="checkbox" checked={hotelForm.is_published} onChange={(e) => setHotelForm({ ...hotelForm, is_published: e.target.checked })} />
+                Publish on the site
+              </label>
+              <label className="flex items-center gap-2 text-sm text-gray-300">
+                <input type="checkbox" checked={hotelForm.is_featured} onChange={(e) => setHotelForm({ ...hotelForm, is_featured: e.target.checked })} />
+                Show on the homepage
+              </label>
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button type="button" onClick={() => setHotelModal(false)} className="px-4 py-2 text-sm text-gray-400">Cancel</button>
+              <button type="submit" disabled={savingHotel} className="rounded-xl bg-emerald-600 px-5 py-2 text-sm font-semibold text-ink-950">
+                {savingHotel ? 'Saving...' : 'Save hotel'}
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>

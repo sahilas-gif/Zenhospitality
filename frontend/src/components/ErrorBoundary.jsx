@@ -12,6 +12,7 @@ export default class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
+      if ('fallback' in this.props) return this.props.fallback;
       return (
         <div className="min-h-[60vh] flex items-center justify-center bg-[#060d17]">
           <div className="text-center glass-card p-12 rounded-2xl max-w-md mx-4">

@@ -40,6 +40,7 @@ function App() {
   const isAdminRoute = pathname.startsWith('/admin');
 
   return (
+    <>
     <ErrorBoundary>
       <MotionConfig reducedMotion="user">
         <SmoothScroll disabled={isAdminRoute} />
@@ -81,11 +82,12 @@ function App() {
               </Routes>
             </Suspense>
           </main>
-          {!isAdminRoute && <ConciergeDial />}
           {!isAdminRoute && <Footer />}
         </div>
       </MotionConfig>
     </ErrorBoundary>
+    {!isAdminRoute && <ConciergeDial />}
+    </>
   );
 }
 

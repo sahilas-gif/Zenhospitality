@@ -3,7 +3,7 @@ import ScopeOfServices from '../components/ScopeOfServices';
 
 const ServicesPage = () => (
   <div>
-    <PageHeader title="Our Services" subtitle="Comprehensive hospitality solutions tailored for every need." />
+    <PageHeader title="Services" subtitle="Holidays, hotel work, and company travel." />
     <ScopeOfServices />
   </div>
 );

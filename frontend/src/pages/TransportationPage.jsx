@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { MapPin, Navigation, Calendar, Users, Send, ChevronDown } from 'lucide-react';
 import QuoteDrawer from '../components/QuoteDrawer';
 import { FLEET, FLEET_CATEGORIES, RATE_CHART, TRANSPORT_SERVICES, TRANSPORT_FAQ, suggestVehicles } from '../data/fleet';
+import { useSeo } from '../lib/seo';
 
 const TRIP_TYPES = ['One Way', 'Round Trip', 'Hourly', 'Airport', 'Wedding', 'Corporate'];
 const VEHICLE_OPTIONS = ['All Cars', 'Tempo Traveller', 'Mini Bus', 'Large Bus', 'Luxury', 'Swift Dzire', 'Innova Crysta', '12 Seater TT', '45 Seater Bus'];
@@ -9,6 +10,7 @@ const VEHICLE_OPTIONS = ['All Cars', 'Tempo Traveller', 'Mini Bus', 'Large Bus',
 const inputClass = 'mt-1.5 w-full h-11 rounded-[12px] bg-[#0A0A0A] border border-white/10 px-3 text-[14px] focus:border-[#D4AF37]/40 outline-none text-white';
 
 export default function TransportationPage() {
+  useSeo('Outstation cabs from Mumbai', 'Sedans, tempo travellers and coaches from Mumbai for airport runs, one-way drops and group trips across Maharashtra and out of the city.');
   const [category, setCategory] = useState('All');
   const [pax, setPax] = useState(12);
   const [openFaq, setOpenFaq] = useState(null);

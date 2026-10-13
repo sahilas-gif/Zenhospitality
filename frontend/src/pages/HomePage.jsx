@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight, Briefcase, Bus, Compass, MessageCircle, Sparkles } from 'lucide-react';
 import Hero from '../components/Hero';
+import ContactSection from '../components/ContactSection';
 import HotelCard from '../components/hotels/HotelCard';
 import Carousel from '../components/ui/Carousel';
 import SectionHeading from '../components/ui/SectionHeading';
@@ -16,9 +17,9 @@ function Tile({ to, eyebrow, title, text, image, icon: Icon, className = '', tal
   return (
     <Link to={to} className={`group relative block overflow-hidden rounded-[1.75rem] border border-gold/10 bg-ink-900 ${className}`}>
       {image && (
-        <ParallaxImage src={image} alt="" amount={tall ? 50 : 30} className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.04]" />
+        <ParallaxImage src={image} alt="" priority amount={tall ? 40 : 24} className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.04]" />
       )}
-      <div className={`absolute inset-0 ${image ? 'bg-gradient-to-t from-ink-950 via-ink-950/55 to-ink-950/10' : ''}`} />
+      <div className={`absolute inset-0 ${image ? 'bg-gradient-to-t from-ink-950/90 via-ink-950/45 to-ink-950/20' : ''}`} />
       {!image && <div className="glow-gold absolute -right-20 -top-20 h-72 w-72 opacity-80" />}
       <div className="relative flex h-full min-h-[15rem] flex-col justify-between p-6 md:p-7">
         <div className="flex items-start justify-between">
@@ -41,13 +42,13 @@ const STATS = [
   ['Hotels', 'Partner rates in Lonavala, Mumbai and growing'],
   ['Tours', 'Pilgrimage, beach and heritage circuits across India'],
   ['Fleet', 'Sedans to 45-seat coaches for any group size'],
-  ['Corporate', 'Travel desks, offsites and MICE end to end'],
+  ['Corporate', 'Travel desks, offsites and conferences'],
 ];
 
 const HomePage = () => {
   const content = usePageContent('home');
   const { items: hotels, loading } = useHotels({ featured: true, limit: 8 });
-  useSeo(null, 'Partner hotels with best rates via Zen, domestic and international tours, corporate travel, MICE and outstation cabs from Mumbai.');
+  useSeo(null, 'Zen World Hospitality, Mumbai. Hotels in Lonavala and Andheri, tours to Kerala, Goa, Gujarat, Uttar Pradesh, Maharashtra and the Chardham, plus outstation cabs.');
 
   return (
     <>
@@ -64,7 +65,7 @@ const HomePage = () => {
         </SectionHeading>
         <div className="grid auto-rows-[minmax(15rem,auto)] gap-4 md:grid-cols-6 md:gap-5">
           <Reveal className="md:col-span-4 md:row-span-2">
-            <Tile to="/hotels" tall eyebrow="Partner hotels" title="Stays with best rates via Zen" text="Handpicked hotels, one enquiry, a planner who confirms everything for you." image="/images/hotels/the-purple-mango/super-deluxe-ac-room-6.webp" className="h-full min-h-[28rem]" />
+            <Tile to="/hotels" tall eyebrow="Partner hotels" title="Stays with best rates via Zen" text="You send one enquiry. A planner confirms the room, the rate and the dates." image="/images/hotels/the-purple-mango/super-deluxe-ac-room-6.webp" className="h-full min-h-[28rem]" />
           </Reveal>
           <Reveal delay={0.08} className="md:col-span-2">
             <Tile to="/plan-trip" eyebrow="AI planner" title="Plan a trip in a minute" icon={Sparkles} className="h-full" />
@@ -73,7 +74,7 @@ const HomePage = () => {
             <Tile to="/transportation" eyebrow="Transport" title="Cabs, travellers and coaches" icon={Bus} className="h-full" />
           </Reveal>
           <Reveal className="md:col-span-3">
-            <Tile to="/domestic-tours" eyebrow="Tours" title="India, curated" text="Kashi to Kerala, Goa to the Chardham." image="/images/site/hero-bg.webp" icon={Compass} className="h-full" />
+            <Tile to="/domestic-tours" eyebrow="Tours" title="Tours across India" text="Kashi, Kerala, Goa and the Chardham." image="/images/site/hero-bg.webp" icon={Compass} className="h-full" />
           </Reveal>
           <Reveal delay={0.08} className="md:col-span-3">
             <Tile to="/services/corporate" eyebrow="Corporate and MICE" title="Offsites and travel desks" image="/images/site/corporate-event-premium.webp" icon={Briefcase} className="h-full" />
@@ -114,6 +115,8 @@ const HomePage = () => {
           ))}
         </div>
       </section>
+
+      <ContactSection showForm={false} />
 
       <section className="relative mx-5 mb-24 overflow-hidden rounded-[2rem] border border-gold/15 md:mx-8 md:mb-32">
         <ParallaxImage src="/images/site/hotel-management-bg.webp" alt="" amount={70} className="absolute inset-0" />

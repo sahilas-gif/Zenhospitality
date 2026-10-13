@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_, func
@@ -15,6 +17,7 @@ from app.services.ai_service import AiUnavailable, CHAT_FALLBACK, generate_custo
 from app.limiter import limiter
 
 router = APIRouter()
+logger = logging.getLogger("zen")
 
 
 class PaginatedResponse(BaseModel):
@@ -233,9 +236,11 @@ async def create_ai_itinerary(
 async def chat_with_ai(request: Request, request_data: ChatRequest, db: AsyncSession = Depends(get_db)):
     messages = [{"role": msg.role, "content": msg.content} for msg in request_data.messages]
     hotels = await _planner_hotels(db, "", [], limit=12)
+    await db.close()
     try:
         return ChatResponse(response=await handle_chat_message(messages, hotels))
-    except AiUnavailable:
+    except Exception:
+        logger.exception("Chat reply failed")
         return ChatResponse(response=CHAT_FALLBACK, fallback=True)
 
 

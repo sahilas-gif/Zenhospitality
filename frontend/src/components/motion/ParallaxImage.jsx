@@ -9,9 +9,15 @@ export default function ParallaxImage({ src, alt, className = '', amount = 60, p
   const y = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [-amount, amount]);
 
   return (
-    <div ref={ref} className={`relative overflow-hidden ${className}`}>
-      <motion.div style={{ y, top: -amount, bottom: -amount }} className="absolute inset-x-0 will-change-transform">
-        <Picture src={src} alt={alt} priority={priority} className="block h-full w-full" imgClassName="h-full w-full object-cover" />
+    <div ref={ref} className={`overflow-hidden ${className}`}>
+      <motion.div style={{ y }} className="absolute inset-0 will-change-transform">
+        <Picture
+          src={src}
+          alt={alt}
+          priority={priority}
+          className="absolute inset-0 block h-full w-full"
+          imgClassName="absolute inset-0 h-full w-full object-cover"
+        />
       </motion.div>
     </div>
   );

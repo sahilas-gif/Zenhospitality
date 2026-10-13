@@ -5,6 +5,7 @@ import PageHeader from '../components/PageHeader';
 import EnquiryModal from '../components/EnquiryModal';
 import ScrollReveal from '../components/ScrollReveal';
 import { CONTACT } from '../data/contact';
+import { useSeo } from '../lib/seo';
 
 // Import all tour data
 import {
@@ -35,6 +36,8 @@ const TourDetailPage = () => {
   const [expandedTour, setExpandedTour] = useState(null);
 
   const data = tourDataMap[state];
+  const routeList = data ? [...new Set(data.tours.map((tour) => tour.route).filter(Boolean))].join('. ') : '';
+  useSeo(data ? data.title : null, data ? `${data.subtitle}. ${routeList}` : undefined);
 
   if (!data) {
     return (
@@ -198,7 +201,7 @@ const TourDetailPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h3 className="text-[#e8d5a8] font-bold uppercase tracking-widest text-sm mb-3">Can't find your ideal tour?</h3>
           <p className="text-gray-300 text-sm max-w-xl mx-auto mb-6">
-            We specialize in custom itineraries. Tell us your dates, group size, and preferences — we'll craft the perfect journey for you.
+            Tell us the dates, the group size and what you want to see. We will rewrite the days around that.
           </p>
           <a
             href={`https://wa.me/${CONTACT.phonePrimaryWhatsApp}?text=${encodeURIComponent('Hi, I need a custom tour package for ' + title + '.')}`}
@@ -206,7 +209,7 @@ const TourDetailPage = () => {
             rel="noreferrer"
             className="inline-flex items-center bg-emerald-600 hover:bg-emerald-500 text-ink-950 px-6 py-3 rounded-full font-bold transition-all hover-glow"
           >
-            <Phone className="w-4 h-4 mr-2" /> Plan Custom Tour — {CONTACT.phonePrimary}
+            <Phone className="w-4 h-4 mr-2" /> Plan a custom tour, {CONTACT.phonePrimary}
           </a>
         </div>
       </section>

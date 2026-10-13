@@ -12,6 +12,7 @@ import {
   tourAddons,
 } from '../data/domesticTours';
 import { CONTACT } from '../data/contact';
+import { useSeo } from '../lib/seo';
 
 const statePages = [
   { name: 'Kerala Tours', slug: 'kerala', tagline: 'Backwaters, Hills & Ayurveda', color: 'from-green-600 to-emerald-700' },
@@ -24,6 +25,10 @@ const statePages = [
 ];
 
 const DomesticToursPage = () => {
+  useSeo(
+    'Domestic Tours',
+    'Tours from Mumbai: Kerala (Munnar, Alleppey, Kochi), Goa, Gujarat (Rann, Dwarka, Somnath, Gir), Varanasi, Ayodhya, Prayagraj, Maharashtra forts, and the Chardham.',
+  );
   const [selected, setSelected] = useState(null);
   const [showAllDays, setShowAllDays] = useState(false);
 

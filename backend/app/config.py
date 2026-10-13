@@ -15,15 +15,11 @@ class Settings(BaseSettings):
     APP_NAME: str = "Zen World Hospitality API"
     DEBUG: bool = False
 
-    # AI Models - verified live against the Gemini API with this account's key.
-    # gemini-3.6-flash and gemini-3.5-flash are free-tier and respond.
-    # gemini-2.5-pro is free-tier but is rate-limited (429) when quota is
-    # exhausted, so it sits in the fallback chain and is skipped on 429.
-    # Primary is tried first; each fallback is tried in order until one succeeds.
-    GEMINI_CHAT_MODEL: str = "gemini-3.6-flash"
-    GEMINI_CHAT_FALLBACK_MODELS: str = "gemini-2.5-pro,gemini-3.5-flash"
-    GEMINI_ITINERARY_MODEL: str = "gemini-3.6-flash"
-    GEMINI_ITINERARY_FALLBACK_MODELS: str = "gemini-2.5-pro,gemini-3.5-flash"
+    # gemini-2.5-pro is gone for this key. gemini-2.5-flash is the model that answers.
+    GEMINI_CHAT_MODEL: str = "gemini-flash-latest"
+    GEMINI_CHAT_FALLBACK_MODELS: str = "gemini-3.5-flash,gemini-2.5-flash"
+    GEMINI_ITINERARY_MODEL: str = "gemini-flash-latest"
+    GEMINI_ITINERARY_FALLBACK_MODELS: str = "gemini-3.5-flash,gemini-2.5-flash"
 
     # Admin portal credentials - MUST be set via environment variables
     # No defaults - fails loudly if not configured
@@ -39,8 +35,8 @@ class Settings(BaseSettings):
     FRONTEND_INDEX_PATH: str = "/home/zenhospi/public_html/index.html"
 
     # Gemini request budget (seconds)
-    AI_ATTEMPT_TIMEOUT: float = 25.0
-    AI_TOTAL_TIMEOUT: float = 50.0
+    AI_ATTEMPT_TIMEOUT: float = 40.0
+    AI_TOTAL_TIMEOUT: float = 70.0
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 

@@ -25,7 +25,7 @@ const ScopeOfServices = () => (
         <h2 className="text-emerald-500 font-medium tracking-widest uppercase text-sm mb-2">Our Expertise</h2>
         <h3 className="text-3xl md:text-5xl font-playfair font-bold text-white mb-6">Scope of Services</h3>
         <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-[#d4af37] mx-auto rounded-full mb-6" />
-        <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base">Comprehensive solutions tailored for every aspect of the hospitality and travel industry.</p>
+        <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base">Holidays for families, rates and listings for hotels, and travel for companies.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">

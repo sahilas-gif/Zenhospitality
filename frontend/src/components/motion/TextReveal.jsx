@@ -12,7 +12,7 @@ export default function TextReveal({ children, as = 'h2', className = '', delay 
   return (
     <Tag className={className} aria-label={children} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-10% 0px' }}>
       {words.map((w, i) => (
-        <span key={i} aria-hidden="true" className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+        <span key={i} aria-hidden="true" className="inline-block overflow-hidden px-[0.08em] pb-[0.12em] -mx-[0.08em] align-bottom">
           <motion.span
             className="inline-block"
             variants={{ hidden: { y: '105%', opacity: 0 }, show: { y: '0%', opacity: 1 } }}

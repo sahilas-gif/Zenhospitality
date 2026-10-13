@@ -2,10 +2,10 @@ import { Briefcase, Building, Plane, CalendarCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const features = [
-  { icon: Plane, title: 'MICE Solutions', desc: 'Meetings, Incentives, Conferences, and Exhibitions planned to perfection.' },
-  { icon: Building, title: 'Offsite & Team Building', desc: 'Curated corporate retreats designed to boost team morale and productivity.' },
-  { icon: Briefcase, title: 'Business Travel', desc: 'Seamless flight, hotel, and visa arrangements for corporate executives.' },
-  { icon: CalendarCheck, title: 'Event Management', desc: 'End-to-end management for product launches and corporate galas.' },
+  { icon: Plane, title: 'MICE', desc: 'Meetings, incentives, conferences and exhibitions, rooms and transfers included.' },
+  { icon: Building, title: 'Offsites', desc: 'A hotel, a hall and a bus for the team, with the schedule written down.' },
+  { icon: Briefcase, title: 'Business travel', desc: 'Flights, hotels and visas for people travelling for work.' },
+  { icon: CalendarCheck, title: 'Events', desc: 'Product launches and company dinners, from the venue to the last cab.' },
 ];
 
 const CorporateDesk = () => (
@@ -16,9 +16,9 @@ const CorporateDesk = () => (
       <div className="flex flex-col lg:flex-row items-start gap-10 lg:gap-16">
         <div className="w-full lg:w-1/2">
           <h2 className="text-emerald-500 font-medium tracking-widest uppercase text-sm mb-2">Corporate Desk</h2>
-          <h3 className="text-3xl md:text-5xl font-playfair font-bold text-white mb-5 md:mb-6">Elevating Corporate Experiences</h3>
+          <h3 className="text-3xl md:text-5xl font-playfair font-bold text-white mb-5 md:mb-6">Company travel, one desk</h3>
           <p className="text-gray-400 text-base md:text-lg mb-8 leading-relaxed">
-            At Zen World Hospitality, we understand that corporate travel and events require precision, professionalism, and a touch of luxury. Our Corporate Desk is dedicated to streamlining your business needs with bespoke solutions.
+            Send the dates, the headcount and the city. We come back with hotels, cars and a hall if you need one, and one person stays on the booking until the group is home.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">

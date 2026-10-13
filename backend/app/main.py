@@ -3,35 +3,31 @@ import os
 import uuid
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-from sqlalchemy import text
-
 from app.api.auth import router as auth_router
 from app.api.enquiry import router as enquiry_router
 from app.api.hotels import router as hotels_router
 from app.api.pages import router as pages_router
+from app.api.seo import robots as seo_robots
 from app.api.seo import router as seo_router
+from app.api.seo import sitemap as seo_sitemap
+from app.database import get_db
 from app.api.upload import router as upload_router
 from app.config import settings
-from app.database import engine
 from app.limiter import limiter
-from app.seed_admin import ensure_admin_user
 
 logger = logging.getLogger("zen")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Schema changes run only through `python -m app.migrations`, never at startup.
-    try:
-        await ensure_admin_user()
-    except Exception:
-        logger.exception("Admin bootstrap skipped")
+    # Do not touch the database here. A blocked startup connection makes every
+    # request, including /api/health, wait forever under Passenger.
     yield
 
 
@@ -86,13 +82,24 @@ for router, path, tag in ROUTERS:
 @app.get("/health")
 @app.get("/api/health")
 async def health_check():
-    schema_version = None
-    try:
-        async with engine.connect() as conn:
-            schema_version = await conn.scalar(text("SELECT MAX(version) FROM schema_migrations"))
-    except Exception:
-        pass
-    return {"status": "ok", "schema_version": schema_version}
+    return {"status": "ok"}
+
+
+# Passenger sometimes forwards /sitemap.xml and /robots.txt to the app root
+# instead of /seo/..., so these aliases sit in front of the SPA catch-all.
+@app.get("/sitemap.xml", include_in_schema=False)
+@app.get("/api/sitemap.xml", include_in_schema=False)
+async def root_sitemap(db=Depends(get_db)):
+    return await seo_sitemap(db)
+
+
+@app.get("/robots.txt", include_in_schema=False, response_class=PlainTextResponse)
+@app.get("/api/robots.txt", include_in_schema=False, response_class=PlainTextResponse)
+async def root_robots():
+    text = await seo_robots()
+    if isinstance(text, str):
+        return PlainTextResponse(text)
+    return text
 
 
 # Serve the built React app. Registered last so API/health/uploads routes win,

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
-import { ArrowDown, ArrowRight, MessageCircle } from 'lucide-react';
+import { ArrowDown, ArrowRight, MessageCircle, Sparkles } from 'lucide-react';
 import MagneticButton from './motion/MagneticButton';
 import TextReveal from './motion/TextReveal';
 import { whatsappUrl } from '../lib/whatsapp';
@@ -24,7 +24,7 @@ const Hero = ({ title, subtitle, description, videoUrl }) => {
 
   return (
     <section ref={ref} className="relative flex min-h-[100svh] items-end overflow-hidden pb-16 md:items-center md:pb-0">
-      <motion.div style={{ y }} className="absolute inset-0 -z-10 will-change-transform">
+      <motion.div style={{ y }} className="absolute inset-0 will-change-transform">
         <picture className="block h-full w-full">
           <source media="(max-width: 900px)" srcSet="/images/hero/resort-sunset-900.avif" type="image/avif" />
           <source media="(max-width: 900px)" srcSet="/images/hero/resort-sunset-900.webp" type="image/webp" />
@@ -59,7 +59,7 @@ const Hero = ({ title, subtitle, description, videoUrl }) => {
             <span className="h-px w-10 bg-gold" /> {subtitle || 'Zen World Hospitality, Mumbai'}
           </motion.p>
           <TextReveal as="h1" delay={0.15} className="text-[2.9rem] leading-[0.98] text-pearl sm:text-6xl md:text-7xl lg:text-[5.6rem]">
-            {title || 'Stays, journeys and events, quietly handled.'}
+            {title || 'Hotels, tours and events, arranged from Mumbai.'}
           </TextReveal>
           <motion.p
             initial={reduce ? false : { opacity: 0, y: 12 }}
@@ -67,16 +67,19 @@ const Hero = ({ title, subtitle, description, videoUrl }) => {
             transition={{ duration: 0.8, delay: 0.55 }}
             className="mt-7 max-w-xl text-base leading-relaxed text-pearl/75 md:text-lg"
           >
-            {description || 'Partner hotels with best rates via Zen, curated tours across India, outstation cabs and corporate travel, all through one team you can WhatsApp.'}
+            {description || 'Partner hotels at rates we negotiate, tours across India, outstation cabs and corporate travel. One team, on WhatsApp.'}
           </motion.p>
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="mt-10 flex flex-col gap-3 sm:flex-row"
+            className="mt-10 flex flex-col flex-wrap gap-3 sm:flex-row"
           >
             <MagneticButton to="/hotels">
               Explore hotels <ArrowRight className="h-4 w-4" />
+            </MagneticButton>
+            <MagneticButton variant="ghost" to="/plan-trip">
+              <Sparkles className="h-4 w-4" /> AI trip planner
             </MagneticButton>
             <MagneticButton variant="ghost" href={whatsappUrl('Hi Zen World Hospitality, I would like help planning a trip.')} target="_blank" rel="noreferrer">
               <MessageCircle className="h-4 w-4" /> WhatsApp a planner

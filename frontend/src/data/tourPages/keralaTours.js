@@ -7,7 +7,7 @@ const tours = [
     route: 'Munnar & Alleppey',
     duration: '4 Nights / 5 Days',
     destination: 'Kerala',
-    description: 'Mist-clad hills to tranquil backwaters. Perfect short getaway curated by Zen World.',
+    description: 'Four nights: Munnar, then a houseboat in Alleppey.',
     highlights: ['Tea Valley Stay', 'Premium Houseboat', 'Tea Factory Tour'],
     itinerary: [
       { day: 1, title: 'Kochi Arrival to Munnar', desc: 'Welcome at Airport. Scenic drive to Munnar. Check-in to Tea Valley resort.' },
@@ -29,7 +29,7 @@ const tours = [
     route: 'Kochi • Munnar • Thekkady • Alleppey',
     duration: '6 Nights / 7 Days',
     destination: 'Kerala',
-    description: 'The Heart of Kerala. Our most loved journey balancing hills, wildlife, backwaters, and heritage.',
+    description: 'Seven days through Kochi, Munnar, Thekkady and Alleppey, with a Periyar safari and a night on a houseboat.',
     highlights: ['Fort Kochi Heritage', 'Periyar Safari', 'Spice Trails', 'Overnight Houseboat', 'Kathakali Show'],
     itinerary: [
       { day: 1, title: 'Kochi Arrival - Gateway to Kerala', desc: 'Welcome at COK Airport. Heritage hotel in Fort Kochi. Evening stroll by Chinese Fishing Nets, Jewish Synagogue. Welcome dinner.' },

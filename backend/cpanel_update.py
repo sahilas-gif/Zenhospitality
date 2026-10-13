@@ -104,6 +104,11 @@ def rollback():
 
 
 def main():
+    # cPanel's "Run Script" box executes the file and drops extra arguments,
+    # so a bare run applies the zip sitting next to this script.
+    if len(sys.argv) == 1:
+        apply(os.path.join(APP_ROOT, "backend_update.zip"))
+        return
     p = argparse.ArgumentParser()
     g = p.add_mutually_exclusive_group(required=True)
     g.add_argument("--check")

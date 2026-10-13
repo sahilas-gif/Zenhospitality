@@ -10,7 +10,7 @@ import { useSeo } from '../lib/seo';
 import { whatsappUrl } from '../lib/whatsapp';
 
 export default function HotelsPage() {
-  useSeo('Partner Hotels', 'Handpicked partner hotels in Lonavala, Mumbai and beyond, with best rates via Zen World Hospitality.');
+  useSeo('Partner Hotels', 'The Purple Mango in Karla, Lonavala, and Nestor Hotel in Marol, Andheri East. Booked through Zen World Hospitality.');
   const { items, cities, loading, error } = useHotels({ limit: 100 });
   const [city, setCity] = useState('All');
   const [q, setQ] = useState('');

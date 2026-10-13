@@ -15,6 +15,21 @@ export function useSeo(title, description) {
       tag.content = description;
     }
     const canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical) canonical.href = `https://zenhospitality.in${window.location.pathname}`;
+    const path = window.location.pathname;
+    if (canonical) canonical.href = `https://zenhospitality.in${path}`;
+    const setMeta = (selector, attr, name, content) => {
+      let tag = document.querySelector(selector);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute(attr, name);
+        document.head.appendChild(tag);
+      }
+      tag.content = content;
+    };
+    if (description) {
+      setMeta('meta[property="og:description"]', 'property', 'og:description', description);
+    }
+    setMeta('meta[property="og:title"]', 'property', 'og:title', document.title);
+    setMeta('meta[property="og:url"]', 'property', 'og:url', `https://zenhospitality.in${path}`);
   }, [title, description]);
 }
